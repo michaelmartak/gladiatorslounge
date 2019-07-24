@@ -1,0 +1,12 @@
+What is the Gladiators' Lounge?
+
+The Problem: I want to build a new deck for a Collectible Card Game!
+
+Unfortunately...the resources to do so are spread over many different sites.  Each site has its own specialty (e.g.,
+inventory, marketplace, strategy, search...).  Each site requires its own credentials.  And user interfaces...well,
+many leave a lot to be desired.
+
+Enter: the Gladiators' Lounge, an open source effort to consolidate those resources, with an effort geared towards getting
+the user interface right first!
+
+With a little bit of elbow grease, we can get there.
