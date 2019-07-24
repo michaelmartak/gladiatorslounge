@@ -14,23 +14,25 @@ DB:
 List of hubs to work with (for MTG Commander, first use case):
 
 Finished Deck Lists:
-+ tappedout.net
++ (*) tappedout.net
 
 Search:
 + gatherer.wizards.com (keyword / feature search)
-+ tcgplayer.com (inventory / marketplace search)
++ (*) tcgplayer.com (inventory / marketplace search)
 + scryfall.com (card variant search)
 
 Inventory:
-+ tappedout.net
-+ tcgplayer.com
++ (*) tappedout.net
++ (*) tcgplayer.com
 
 Strategy:
 + edhrec.com
 
 Marketplace:
-+ pucatrade.com
-+ tcgplayer.com
++ (*) pucatrade.com
++ (*) tcgplayer.com
 
 News / Buzz:
 + Various (dailymtg, edhrec, etc.)
+
+(*) = credentials required
