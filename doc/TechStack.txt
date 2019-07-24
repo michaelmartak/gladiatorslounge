@@ -1,0 +1,36 @@
+Technology Stack (In Progress)
+
+SCM/Repo: GitHub (this site)
+
+Languages:
++ Java (rich client UI) <--I can be talked out of this, but I know this area extremely well
++ Python (REST APIs / web interaction)
++ Node.js (probably)
+
+DB:
++ Some sort of local DB for caching
++ Some sort of combination of local DB and asynchronous processing in a remote DB for inventory
+
+List of hubs to work with (for MTG Commander, first use case):
+
+Finished Deck Lists:
++ tappedout.net
+
+Search:
++ gatherer.wizards.com (keyword / feature search)
++ tcgplayer.com (inventory / marketplace search)
++ scryfall.com (card variant search)
+
+Inventory:
++ tappedout.net
++ tcgplayer.com
+
+Strategy:
++ edhrec.com
+
+Marketplace:
++ pucatrade.com
++ tcgplayer.com
+
+News / Buzz:
++ Various (dailymtg, edhrec, etc.)
