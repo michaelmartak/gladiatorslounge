@@ -16,6 +16,13 @@ import java.util.function.Consumer;
 public interface GladiatorService {
 
 	/**
+	 * Returns the localized name of the service
+	 * 
+	 * @return a localized string, never null
+	 */
+	String getLocalizedName();
+
+	/**
 	 * Called to initialize the service
 	 * 
 	 * @param onFailure callback to invoke if something went wrong with the service
