@@ -15,4 +15,18 @@ package org.oaktownrpg.jgladiator.framework;
  */
 public interface Hub {
 
+	/**
+	 * Returns the localization service
+	 * 
+	 * @return localization service
+	 */
+	Localization localization();
+
+	/**
+	 * Returns the available service providers
+	 * 
+	 * @return an iterable, never null
+	 */
+	Iterable<GladiatorServiceProvider> getServiceProviders();
+
 }

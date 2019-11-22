@@ -3,26 +3,25 @@
  */
 package org.oaktownrpg.jgladiator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.Hub;
+import org.oaktownrpg.jgladiator.framework.Localization;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
+import org.oaktownrpg.jgladiator.framework.ServiceVisitor;
+import org.oaktownrpg.jgladiator.ui.JGladiatorUI;
 
 /**
  * 
@@ -33,27 +32,31 @@ import org.oaktownrpg.jgladiator.framework.ServiceFailure;
  */
 public final class JGladiator implements Hub {
 
-	private final Map<String, GladiatorServiceProvider> serviceProvidersById = new LinkedHashMap<>();
-	private final Map<String, Map<String, GladiatorService>> servicesByProviderId = new LinkedHashMap<>();
-	private final Set<String> readyServices = new HashSet<>();
+	private Iterable<GladiatorServiceProvider> serviceProviders;
 	private ExecutorService executors;
 
 	/**
 	 * @param args
-	 * @throws InterruptedException
+	 * @throws Exception
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws Exception {
 		new JGladiator().start();
+	}
+
+	JGladiator() {
 	}
 
 	/**
 	 * Starts the application
 	 * 
 	 * @throws InterruptedException
+	 * @throws InvocationTargetException
 	 */
-	private void start() throws InterruptedException {
+	private void start() throws InterruptedException, InvocationTargetException {
 		// Discovery : get all the services
 		discoverServices();
+		// Start the UI
+		new JGladiatorUI(this).start();
 		// Executors : set up thread pool
 		initExecutors();
 		// Initialize services as tasks on the executor
@@ -64,12 +67,12 @@ public final class JGladiator implements Hub {
 	 * Called when a service fails to start
 	 * 
 	 * @param failure
-	 * @param serviceProviderName
-	 * @param serviceName
+	 * @param sp
+	 * @param service
 	 */
-	void serviceFailed(final ServiceFailure failure, final String serviceProviderName, final String serviceName) {
+	void serviceFailed(final ServiceFailure failure, GladiatorServiceProvider sp, GladiatorService service) {
 		Logger.getLogger(getClass().getName())
-				.severe(serviceProviderName + " : " + serviceName + " : " + "Service Failed : " + failure);
+				.severe(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Failed : " + failure);
 	}
 
 	/**
@@ -78,10 +81,10 @@ public final class JGladiator implements Hub {
 	 * @param serviceProviderName
 	 * @param serviceName
 	 */
-	void serviceReady(final String serviceProviderName, final String serviceName) {
+	public void serviceReady(GladiatorServiceProvider sp, GladiatorService service) {
 		Logger.getLogger(getClass().getName())
-				.info(serviceProviderName + " : " + serviceName + " : " + "Service Ready");
-		readyServices.add(serviceName);
+				.info(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Ready");
+		// TODO
 	}
 
 	/**
@@ -92,21 +95,13 @@ public final class JGladiator implements Hub {
 	 */
 	private Collection<Callable<?>> tasksFromServices() {
 		final List<Callable<?>> tasks = new LinkedList<>();
-		for (final Entry<String, Map<String, GladiatorService>> spEntry : servicesByProviderId.entrySet()) {
-			final String serviceProviderName = spEntry.getKey();
-			final Map<String, GladiatorService> services = spEntry.getValue();
-			for (final Entry<String, GladiatorService> serviceEntry : services.entrySet()) {
-				final String serviceName = serviceEntry.getKey();
-				final GladiatorService service = serviceEntry.getValue();
-				final Consumer<ServiceFailure> onFailure = (ServiceFailure failure) -> serviceFailed(failure,
-						serviceProviderName, serviceName);
-				final Runnable onReady = () -> serviceReady(serviceProviderName, serviceName);
-				tasks.add(() -> {
-					service.start(JGladiator.this, onFailure, onReady);
-					return null;
-				});
-			}
-		}
+		ServiceVisitor.visit(serviceProviders, (GladiatorServiceProvider sp, GladiatorService service) -> {
+			tasks.add(() -> {
+				service.start(/* onFailed */ (ServiceFailure failure) -> serviceFailed(failure, sp, service),
+						/* onReady */ () -> serviceReady(sp, service));
+				return null;
+			});
+		});
 		return tasks;
 	}
 
@@ -123,17 +118,36 @@ public final class JGladiator implements Hub {
 	 * Discovers all available services
 	 */
 	private void discoverServices() {
-		final ServiceLoader<GladiatorServiceProvider> serviceProviders = ServiceLoader
-				.load(GladiatorServiceProvider.class);
-		for (final GladiatorServiceProvider s : serviceProviders) {
-			final String id = s.getIdentifier();
-			serviceProvidersById.put(id, s);
-			final Map<String, GladiatorService> services = new LinkedHashMap<>();
-			for (GladiatorService service : s.getServices()) {
-				services.put(service.getIdentifier(), service);
+		// Load the services
+		final ServiceLoader<GladiatorServiceProvider> sl = ServiceLoader.load(GladiatorServiceProvider.class);
+		// Create a list and add the elements
+		final LinkedList<GladiatorServiceProvider> ll = new LinkedList<>();
+		sl.forEach(ll::add);
+		// Set the local copy to be immutable
+		serviceProviders = Collections.unmodifiableList(ll);
+
+		// Initialize them with the hub
+		ServiceVisitor.visit(serviceProviders, (GladiatorServiceProvider sp, GladiatorService service) -> {
+			sp.initialize(this);
+			service.initialize(this);
+		});
+	}
+
+	@Override
+	public Localization localization() {
+		return new Localization() {
+
+			@Override
+			public String string(String key) {
+				// TODO Auto-generated method stub
+				return key;
 			}
-			servicesByProviderId.put(id, services);
-		}
+		};
+	}
+
+	@Override
+	public Iterable<GladiatorServiceProvider> getServiceProviders() {
+		return serviceProviders;
 	}
 
 }

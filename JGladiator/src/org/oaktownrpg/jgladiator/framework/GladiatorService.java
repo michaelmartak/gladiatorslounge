@@ -47,13 +47,20 @@ public interface GladiatorService {
 	ServiceType getType();
 
 	/**
-	 * Called by the hub to start the service.
+	 * Called by the hub to initialize the service. Nothing time-intensive should
+	 * happen during initialization.
 	 * 
 	 * @param hub       the hub calling the service
+	 */
+	void initialize(Hub hub);
+
+	/**
+	 * Called by the hub to start the service.
+	 * 
 	 * @param onFailure callback to invoke if something went wrong with the service
 	 *                  during initialization
 	 * @param onReady   callback to invoke when the service is fully initialized
 	 */
-	void start(Hub hub, Consumer<ServiceFailure> onFailure, Runnable onReady);
+	void start(Consumer<ServiceFailure> onFailure, Runnable onReady);
 
 }

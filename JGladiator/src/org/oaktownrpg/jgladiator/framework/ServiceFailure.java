@@ -67,6 +67,13 @@ public final class ServiceFailure {
 	}
 
 	/**
+	 * Create a new Service Failure of {@link Severity#ERROR} severity
+	 */
+	public ServiceFailure(String localizedMessage, Exception exception) {
+		this(Severity.ERROR, localizedMessage, exception);
+	}
+
+	/**
 	 * Create a new Service Failure
 	 * 
 	 * @param severity         the severity of the failure. If <code>null</code>,

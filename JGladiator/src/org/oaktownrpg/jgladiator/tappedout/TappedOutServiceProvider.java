@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
+import org.oaktownrpg.jgladiator.framework.Hub;
 
 /**
  * Service provider for www.tappedout.net
@@ -16,6 +17,13 @@ import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
  */
 public final class TappedOutServiceProvider implements GladiatorServiceProvider {
 
+	private final TappedOutBuildService buildService;
+	private Hub hub;
+
+	public TappedOutServiceProvider() {
+		buildService = new TappedOutBuildService(this);
+	}
+
 	@Override
 	public String getIdentifier() {
 		return "TappedOut.net";
@@ -23,13 +31,17 @@ public final class TappedOutServiceProvider implements GladiatorServiceProvider 
 
 	@Override
 	public String getLocalizedName() {
-		// TODO Auto-generated method stub
-		return null;
+		return hub.localization().string("tappedOut");
 	}
 
 	@Override
 	public Set<GladiatorService> getServices() {
-		return Set.of(new TappedOutBuildService(this));
+		return Set.of(buildService);
+	}
+
+	@Override
+	public void initialize(Hub hub) {
+		this.hub = hub;
 	}
 
 }

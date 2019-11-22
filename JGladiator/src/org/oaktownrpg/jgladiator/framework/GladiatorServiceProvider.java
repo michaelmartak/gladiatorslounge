@@ -25,6 +25,13 @@ public interface GladiatorServiceProvider {
 	String getIdentifier();
 
 	/**
+	 * Initializes this service provider from the hub.
+	 * 
+	 * @param hub
+	 */
+	void initialize(Hub hub);
+
+	/**
 	 * Returns the localized name of the service provider (e.g., FOO.com)
 	 * 
 	 * @return a localized string, never null
