@@ -18,15 +18,22 @@ public interface Hub {
 	/**
 	 * Returns the localization service
 	 * 
-	 * @return localization service
+	 * @return localization service, never null
 	 */
 	Localization localization();
 
 	/**
-	 * Returns the available service providers
+	 * Returns the discoverable services
 	 * 
-	 * @return an iterable, never null
+	 * @return discoverable services, never null
 	 */
-	Iterable<GladiatorServiceProvider> getServiceProviders();
+	Services services();
+
+	/**
+	 * Returns the executors for concurrency / threading
+	 * 
+	 * @return executors, never null
+	 */
+	HubExecutors executors();
 
 }

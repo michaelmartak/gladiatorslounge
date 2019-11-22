@@ -12,7 +12,6 @@ import javax.swing.table.AbstractTableModel;
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.Hub;
-import org.oaktownrpg.jgladiator.framework.ServiceVisitor;
 
 /**
  * @author michaelmartak
@@ -42,7 +41,7 @@ class ServicesTableModel extends AbstractTableModel {
 	ServicesTableModel(Hub hub) {
 		this.hub = hub;
 		List<ServiceRow> serviceRows = new LinkedList<>();
-		ServiceVisitor.visit(hub.getServiceProviders(), (GladiatorServiceProvider sp, GladiatorService service) -> {
+		hub.services().visitServices((GladiatorServiceProvider sp, GladiatorService service) -> {
 			serviceRows.add(new ServiceRow(sp, service));
 		});
 		rows = new ArrayList<>(serviceRows);
