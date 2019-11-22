@@ -15,7 +15,7 @@ public enum ServiceType {
 	 * A service providing sales, purchases, or trades. Generally requires
 	 * authentication when performing transactions.
 	 */
-	MARKETPLACE,
+	MARKET,
 	/**
 	 * A service that provides the user with an inventory. Usually requires
 	 * authentication, but may not always (e.g., a local database would not require
@@ -33,6 +33,14 @@ public enum ServiceType {
 	 * suggestions). Authentication is forbidden, since performance is critical.
 	 * Caching and updating is an important aspect of the service.
 	 */
-	LOOKUP
+	LOOKUP,
+	/**
+	 * A service that lets you build and create. Usually requires authentication.
+	 */
+	BUILD,
+	/**
+	 * A service that provides meaningful or catered advice.
+	 */
+	INTELLIGENCE
 
 }

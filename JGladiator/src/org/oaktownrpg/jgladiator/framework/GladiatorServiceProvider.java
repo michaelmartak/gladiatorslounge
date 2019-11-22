@@ -18,7 +18,7 @@ public interface GladiatorServiceProvider {
 	 * Returns the unique identifier for this service provider. It is the
 	 * responsibility of the service provider to provide an ID that is presentable
 	 * enough for debugging purposes and that will not clash with other, similar
-	 * service providers if viewed together in a list
+	 * service providers if viewed together in a list.
 	 * 
 	 * @return an identifier string, never null
 	 */
@@ -36,6 +36,6 @@ public interface GladiatorServiceProvider {
 	 * 
 	 * @return a set of services, never null, presumed to be immutable
 	 */
-	Set<GladiatorService> services();
+	Set<GladiatorService> getServices();
 
 }
