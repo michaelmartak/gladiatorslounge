@@ -1,8 +1,8 @@
 /**
  * 
- * JGladiator: Gladiators Lounge Java application.
+ * JGladiator: Gladiators Lounge.
  * <p/>
- * Application framework package
+ * Framework package for interfaces and services.
  * 
  * @author mmartak
  *

@@ -1,5 +1,5 @@
 /**
- * Gladiators Lounge: Java application
+ * Gladiators Lounge: base package
  * 
  * @author mmartak
  *

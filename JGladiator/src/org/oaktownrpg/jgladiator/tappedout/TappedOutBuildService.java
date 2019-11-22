@@ -47,7 +47,7 @@ final class TappedOutBuildService implements GladiatorService {
 
 	@Override
 	public String getLocalizedName() {
-		return hub.localization().string("tappedOut.service");
+		return hub.localization().string("tappedOut.service.builder");
 	}
 
 	@Override

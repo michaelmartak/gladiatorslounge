@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.oaktownrpg.jgladiator;
+package org.oaktownrpg.jgladiator.app;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -81,7 +81,7 @@ public final class JGladiator implements Hub {
 	 * @param serviceProviderName
 	 * @param serviceName
 	 */
-	public void serviceReady(GladiatorServiceProvider sp, GladiatorService service) {
+	void serviceReady(GladiatorServiceProvider sp, GladiatorService service) {
 		Logger.getLogger(getClass().getName())
 				.info(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Ready");
 		// TODO
@@ -135,14 +135,7 @@ public final class JGladiator implements Hub {
 
 	@Override
 	public Localization localization() {
-		return new Localization() {
-
-			@Override
-			public String string(String key) {
-				// TODO Auto-generated method stub
-				return key;
-			}
-		};
+		return new AppLocalization();
 	}
 
 	@Override
