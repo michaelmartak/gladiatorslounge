@@ -47,24 +47,13 @@ public interface GladiatorService {
 	ServiceType getType();
 
 	/**
-	 * Called to initialize the service. Initialization is any preparation that
-	 * should be completed by the service before the service is officially started.
-	 * For example, all resources the service needs to be allocated.
+	 * Called by the hub to start the service.
 	 * 
+	 * @param hub       the hub calling the service
 	 * @param onFailure callback to invoke if something went wrong with the service
 	 *                  during initialization
 	 * @param onReady   callback to invoke when the service is fully initialized
 	 */
-	void initialize(Consumer<ServiceFailure> onFailure, Runnable onReady);
-
-	/**
-	 * Invoked by the hub when all of the services have been initialized. There is
-	 * no guarantee that services will be started in any particular order (it is
-	 * assumed that any initialization should be taken care of already). Services
-	 * should be ready to send and receive messages.
-	 * 
-	 * @param hub
-	 */
-	void start(Hub hub);
+	void start(Hub hub, Consumer<ServiceFailure> onFailure, Runnable onReady);
 
 }

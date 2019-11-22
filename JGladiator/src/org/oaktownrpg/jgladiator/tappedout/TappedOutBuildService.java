@@ -48,14 +48,8 @@ final class TappedOutBuildService implements GladiatorService {
 	}
 
 	@Override
-	public void initialize(Consumer<ServiceFailure> onFailure, Runnable onReady) {
+	public void start(Hub hub, Consumer<ServiceFailure> onFailure, Runnable onReady) {
 		onReady.run();
-	}
-
-	@Override
-	public void start(Hub hub) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

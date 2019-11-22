@@ -4,12 +4,14 @@
 package org.oaktownrpg.jgladiator;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,6 +35,7 @@ public final class JGladiator implements Hub {
 
 	private final Map<String, GladiatorServiceProvider> serviceProvidersById = new LinkedHashMap<>();
 	private final Map<String, Map<String, GladiatorService>> servicesByProviderId = new LinkedHashMap<>();
+	private final Set<String> readyServices = new HashSet<>();
 	private ExecutorService executors;
 
 	/**
@@ -49,24 +52,44 @@ public final class JGladiator implements Hub {
 	 * @throws InterruptedException
 	 */
 	private void start() throws InterruptedException {
-		// Discovery
+		// Discovery : get all the services
 		discoverServices();
-		// Executors
+		// Executors : set up thread pool
 		initExecutors();
-		// Initialize services as tasks
+		// Initialize services as tasks on the executor
 		executors.invokeAll(tasksFromServices());
 	}
 
-	void serviceFailed(ServiceFailure failure, String serviceProviderName, String serviceName) {
+	/**
+	 * Called when a service fails to start
+	 * 
+	 * @param failure
+	 * @param serviceProviderName
+	 * @param serviceName
+	 */
+	void serviceFailed(final ServiceFailure failure, final String serviceProviderName, final String serviceName) {
 		Logger.getLogger(getClass().getName())
-				.severe(serviceProviderName = " : " + serviceName + " : " + "Service Failed : " + failure);
+				.severe(serviceProviderName + " : " + serviceName + " : " + "Service Failed : " + failure);
 	}
 
-	void serviceReady(String serviceProviderName, String serviceName) {
+	/**
+	 * Called when a service starts
+	 * 
+	 * @param serviceProviderName
+	 * @param serviceName
+	 */
+	void serviceReady(final String serviceProviderName, final String serviceName) {
 		Logger.getLogger(getClass().getName())
-				.info(serviceProviderName = " : " + serviceName + " : " + "Service Ready");
+				.info(serviceProviderName + " : " + serviceName + " : " + "Service Ready");
+		readyServices.add(serviceName);
 	}
 
+	/**
+	 * Collects the registered services and turns them into Callable task objects to
+	 * be run from the executor service
+	 * 
+	 * @return a collection of tasks to initialize the services
+	 */
 	private Collection<Callable<?>> tasksFromServices() {
 		final List<Callable<?>> tasks = new LinkedList<>();
 		for (final Entry<String, Map<String, GladiatorService>> spEntry : servicesByProviderId.entrySet()) {
@@ -79,7 +102,7 @@ public final class JGladiator implements Hub {
 						serviceProviderName, serviceName);
 				final Runnable onReady = () -> serviceReady(serviceProviderName, serviceName);
 				tasks.add(() -> {
-					service.initialize(onFailure, onReady);
+					service.start(JGladiator.this, onFailure, onReady);
 					return null;
 				});
 			}
