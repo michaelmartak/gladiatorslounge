@@ -36,4 +36,11 @@ public interface Hub {
 	 */
 	HubExecutors executors();
 
+	/**
+	 * Returns the application's local storage service
+	 * 
+	 * @return storage, never null
+	 */
+	Storage storage();
+
 }

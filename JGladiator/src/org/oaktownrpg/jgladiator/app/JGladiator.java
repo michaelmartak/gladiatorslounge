@@ -13,6 +13,7 @@ import org.oaktownrpg.jgladiator.framework.HubExecutors;
 import org.oaktownrpg.jgladiator.framework.Localization;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.Services;
+import org.oaktownrpg.jgladiator.framework.Storage;
 import org.oaktownrpg.jgladiator.ui.JGladiatorUI;
 
 /**
@@ -27,6 +28,7 @@ public final class JGladiator implements Hub {
 	private final AppExecutors executors = new AppExecutors();
 	private final AppLocalization localization = new AppLocalization();
 	private final AppServices services = new AppServices(this);
+	private final AppStorage storage = new AppStorage();
 
 	/**
 	 * @param args
@@ -92,6 +94,11 @@ public final class JGladiator implements Hub {
 	@Override
 	public HubExecutors executors() {
 		return executors;
+	}
+
+	@Override
+	public Storage storage() {
+		return storage;
 	}
 
 }
