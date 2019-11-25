@@ -59,11 +59,15 @@ class ServicesTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
+        final ServiceRow serviceRow = rows.get(row);
         switch (column) {
         case 0:
-            return rows.get(row).sp.getLocalizedName();
+            return serviceRow.sp.getLocalizedName();
         case 1:
-            return rows.get(row).service.getLocalizedName();
+            return serviceRow.service.getLocalizedName();
+        case 2:
+            return hub.localization()
+                    .string("jgladiator.service.type." + serviceRow.service.getType().name());
         default:
             return "";
         }
@@ -80,7 +84,7 @@ class ServicesTableModel extends AbstractTableModel {
             columnKey = "jgladiator.service.serviceName";
             break;
         case 2:
-            columnKey = "jgladiator.service.status";
+            columnKey = "jgladiator.service.type";
             break;
         default:
             return "";

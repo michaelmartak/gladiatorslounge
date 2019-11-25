@@ -3,7 +3,7 @@
  */
 package org.oaktownrpg.jgladiator.framework;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Provider (endpoint) of multiple services that are typically all connected
@@ -39,10 +39,10 @@ public interface GladiatorServiceProvider {
     String getLocalizedName();
 
     /**
-     * Returns a set of services provided by this provider
+     * Returns a collection of services provided by this provider
      * 
-     * @return a set of services, never null, presumed to be immutable
+     * @return a collection of services, never null, presumed to be immutable
      */
-    Set<GladiatorService> getServices();
+    Collection<GladiatorService> getServices();
 
 }

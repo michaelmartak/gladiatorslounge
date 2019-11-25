@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.oaktownrpg.jgladiator.wizards;
+package org.oaktownrpg.jgladiator.scryfall;
 
 import java.util.function.Consumer;
 
@@ -9,18 +9,16 @@ import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.helper.AbstractLookupService;
 
 /**
- * Wizards of the Coast lookup service.
- * 
  * @author michaelmartak
  *
  */
-class WizardsLookupService extends AbstractLookupService<WizardsServiceProvider> {
+class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvider> {
 
     /**
      * 
      */
-    WizardsLookupService(WizardsServiceProvider provider) {
-        super(provider, "wizards.lookup");
+    ScryfallLookupService(ScryfallServiceProvider provider) {
+        super(provider, "scryfall.lookup");
     }
 
     @Override

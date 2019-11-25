@@ -11,13 +11,8 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.function.Consumer;
 
-import org.oaktownrpg.jgladiator.framework.BuilderService;
-import org.oaktownrpg.jgladiator.framework.GladiatorService;
-import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
-import org.oaktownrpg.jgladiator.framework.Hub;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
-import org.oaktownrpg.jgladiator.framework.ServiceType;
-import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
+import org.oaktownrpg.jgladiator.framework.helper.AbstractBuilderService;
 
 /**
  * Main builder service for TappedOut.net
@@ -25,41 +20,13 @@ import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
  * @author michaelmartak
  *
  */
-final class TappedOutBuilderService implements GladiatorService, BuilderService {
+final class TappedOutBuilderService extends AbstractBuilderService<TappedOutServiceProvider> {
 
     private static final URI TAPPED_OUT_URL = URI.create("https://tappedout.net");
-    private final TappedOutServiceProvider serviceProvider;
     private HttpClient httpClient;
-    private Hub hub;
 
-    TappedOutBuilderService(TappedOutServiceProvider serviceProvider) {
-        assert serviceProvider != null;
-        this.serviceProvider = serviceProvider;
-    }
-
-    @Override
-    public GladiatorServiceProvider getProvider() {
-        return serviceProvider;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "TappedOut Deck Builder";
-    }
-
-    @Override
-    public String getLocalizedName() {
-        return hub.localization().string("tappedOut.service.builder");
-    }
-
-    @Override
-    public ServiceTypeEnum getType() {
-        return ServiceTypeEnum.BUILDER;
-    }
-
-    @Override
-    public void initialize(Hub hub) {
-        this.hub = hub;
+    TappedOutBuilderService(TappedOutServiceProvider provider) {
+        super(provider, "tappedout.builder");
     }
 
     @Override
@@ -74,15 +41,10 @@ final class TappedOutBuilderService implements GladiatorService, BuilderService 
             }
             String body = response.body();
         } catch (IOException | InterruptedException e) {
-            onFailure.accept(new ServiceFailure(localize("initialHttpRequest"), e));
+            onFailure.accept(new ServiceFailure(hub().localization().string("failure.http"), e)); // FIXME
             return;
         }
         onReady.run();
-    }
-
-    private String localize(String key) {
-        // TODO Auto-generated method stub
-        return key;
     }
 
     private HttpRequest newHttpRequestGET() {
@@ -91,14 +53,6 @@ final class TappedOutBuilderService implements GladiatorService, BuilderService 
 
     private HttpClient newHttpClient() {
         return HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-    }
-
-    @Override
-    public <T extends ServiceType> T asType(Class<T> serviceType) {
-        if (BuilderService.class.equals(serviceType)) {
-            return serviceType.cast(this);
-        }
-        throw new ClassCastException("Service is not of type " + serviceType);
     }
 
 }
