@@ -15,32 +15,32 @@ package org.oaktownrpg.jgladiator.framework;
  */
 public interface Hub {
 
-	/**
-	 * Returns the localization service
-	 * 
-	 * @return localization service, never null
-	 */
-	Localization localization();
+    /**
+     * Returns the localization service
+     * 
+     * @return localization service, never null
+     */
+    Localization localization();
 
-	/**
-	 * Returns the discoverable services
-	 * 
-	 * @return discoverable services, never null
-	 */
-	Services services();
+    /**
+     * Returns the discoverable services
+     * 
+     * @return discoverable services, never null
+     */
+    Services services();
 
-	/**
-	 * Returns the executors for concurrency / threading
-	 * 
-	 * @return executors, never null
-	 */
-	HubExecutors executors();
+    /**
+     * Returns the executors for concurrency / threading
+     * 
+     * @return executors, never null
+     */
+    HubExecutors executors();
 
-	/**
-	 * Returns the application's local storage service
-	 * 
-	 * @return storage, never null
-	 */
-	Storage storage();
+    /**
+     * Returns the application's local storage service
+     * 
+     * @return storage, never null
+     */
+    Storage storage();
 
 }

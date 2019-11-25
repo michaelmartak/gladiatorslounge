@@ -55,7 +55,7 @@ class AppServices implements Services {
 		// Load the services
 		final ServiceLoader<GladiatorServiceProvider> sl = ServiceLoader.load(GladiatorServiceProvider.class);
 		// Create a list and add the elements
-		final LinkedList<GladiatorServiceProvider> ll = new LinkedList<>();
+        final LinkedList<GladiatorServiceProvider> ll = new LinkedList<>();
 		sl.forEach(ll::add);
 		// Set the local copy to be immutable
 		serviceProviders = Collections.unmodifiableList(ll);

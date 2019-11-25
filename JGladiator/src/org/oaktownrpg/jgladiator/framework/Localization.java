@@ -11,12 +11,12 @@ package org.oaktownrpg.jgladiator.framework;
  */
 public interface Localization {
 
-	/**
-	 * Returns a localized string from the given key
-	 * 
-	 * @param key
-	 * @return a localized string, or an empty string if not found
-	 */
-	String string(String key);
+    /**
+     * Returns a localized string from the given key
+     * 
+     * @param key
+     * @return a localized string, or an empty string if not found
+     */
+    String string(String key);
 
 }

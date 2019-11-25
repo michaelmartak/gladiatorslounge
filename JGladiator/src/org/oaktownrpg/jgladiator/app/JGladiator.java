@@ -25,80 +25,81 @@ import org.oaktownrpg.jgladiator.ui.JGladiatorUI;
  */
 public final class JGladiator implements Hub {
 
-	private final AppExecutors executors = new AppExecutors();
-	private final AppLocalization localization = new AppLocalization();
-	private final AppServices services = new AppServices(this);
-	private final AppStorage storage = new AppStorage();
+    private final AppExecutors executors = new AppExecutors();
+    private final AppLocalization localization = new AppLocalization();
+    private final AppServices services = new AppServices(this);
+    private final AppStorage storage = new AppStorage();
 
-	/**
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-		new JGladiator().start();
-	}
+    /**
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        new JGladiator().start();
+    }
 
-	JGladiator() {
-	}
+    JGladiator() {
+    }
 
-	/**
-	 * Starts the application
-	 * 
-	 * @throws InterruptedException
-	 * @throws InvocationTargetException
-	 */
-	private void start() throws InterruptedException, InvocationTargetException {
-		// Discovery : get all the services. Services must be discovered before the UI starts.
-		services.discoverServices();
-		// Start the UI
-		new JGladiatorUI(this).start();
-		// Initialize services as tasks on the executor
-		executors.invokeAll(services.tasksFromServices());
-	}
+    /**
+     * Starts the application
+     * 
+     * @throws InterruptedException
+     * @throws InvocationTargetException
+     */
+    private void start() throws InterruptedException, InvocationTargetException {
+        // Discovery : get all the services. Services must be discovered before the UI
+        // starts.
+        services.discoverServices();
+        // Start the UI
+        new JGladiatorUI(this).start();
+        // Initialize services as tasks on the executor
+        executors.invokeAll(services.tasksFromServices());
+    }
 
-	/**
-	 * Called when a service fails to start
-	 * 
-	 * @param failure
-	 * @param sp
-	 * @param service
-	 */
-	void serviceFailed(final ServiceFailure failure, final GladiatorServiceProvider sp,
-			final GladiatorService service) {
-		Logger.getLogger(getClass().getName())
-				.severe(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Failed : " + failure);
-	}
+    /**
+     * Called when a service fails to start
+     * 
+     * @param failure
+     * @param sp
+     * @param service
+     */
+    void serviceFailed(final ServiceFailure failure, final GladiatorServiceProvider sp,
+            final GladiatorService service) {
+        Logger.getLogger(getClass().getName())
+                .severe(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Failed : " + failure);
+    }
 
-	/**
-	 * Called when a service starts
-	 * 
-	 * @param serviceProviderName
-	 * @param serviceName
-	 */
-	void serviceReady(final GladiatorServiceProvider sp, final GladiatorService service) {
-		Logger.getLogger(getClass().getName())
-				.info(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Ready");
-		// TODO
-	}
+    /**
+     * Called when a service starts
+     * 
+     * @param serviceProviderName
+     * @param serviceName
+     */
+    void serviceReady(final GladiatorServiceProvider sp, final GladiatorService service) {
+        Logger.getLogger(getClass().getName())
+                .info(sp.getIdentifier() + " : " + service.getIdentifier() + " : " + "Service Ready");
+        // TODO
+    }
 
-	@Override
-	public Localization localization() {
-		return localization;
-	}
+    @Override
+    public Localization localization() {
+        return localization;
+    }
 
-	@Override
-	public Services services() {
-		return services;
-	}
+    @Override
+    public Services services() {
+        return services;
+    }
 
-	@Override
-	public HubExecutors executors() {
-		return executors;
-	}
+    @Override
+    public HubExecutors executors() {
+        return executors;
+    }
 
-	@Override
-	public Storage storage() {
-		return storage;
-	}
+    @Override
+    public Storage storage() {
+        return storage;
+    }
 
 }

@@ -14,18 +14,18 @@ import java.util.function.Consumer;
  */
 public interface Services {
 
-	/**
-	 * Convenience method to iterate through all service providers
-	 * 
-	 * @param consumer
-	 */
-	void visitServiceProviders(Consumer<GladiatorServiceProvider> consumer);
+    /**
+     * Convenience method to iterate through all service providers
+     * 
+     * @param consumer
+     */
+    void visitServiceProviders(Consumer<GladiatorServiceProvider> consumer);
 
-	/**
-	 * Convenience method to iterate through all services by providers
-	 * 
-	 * @param consumer
-	 */
-	void visitServices(BiConsumer<GladiatorServiceProvider, GladiatorService> consumer);
+    /**
+     * Convenience method to iterate through all services by providers
+     * 
+     * @param consumer
+     */
+    void visitServices(BiConsumer<GladiatorServiceProvider, GladiatorService> consumer);
 
 }

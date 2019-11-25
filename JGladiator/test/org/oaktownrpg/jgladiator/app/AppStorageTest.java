@@ -13,16 +13,16 @@ import org.junit.Test;
  */
 public class AppStorageTest {
 
-	/**
-	 * Tests that the cryptography store can save and load
-	 */
-	@Test
-	public void testLoadCryptographyStore() {
-		final AppStorage storage = new AppStorage();
-		final String key = "testCredentials";
-		final String passphrase = "abcdefg";
-		storage.storeCredentials(key, passphrase);
-		final Supplier<String> value = storage.fetchCredentials(key);
-		Assert.assertEquals(passphrase, value.get());
-	}
+    /**
+     * Tests that the cryptography store can save and load
+     */
+    @Test
+    public void testLoadCryptographyStore() {
+        final AppStorage storage = new AppStorage();
+        final String key = "testCredentials";
+        final String passphrase = "abcdefg";
+        storage.storeCredentials(key, passphrase);
+        final Supplier<String> value = storage.fetchCredentials(key);
+        Assert.assertEquals(passphrase, value.get());
+    }
 }

@@ -17,31 +17,31 @@ import org.oaktownrpg.jgladiator.framework.Hub;
  */
 public final class TappedOutServiceProvider implements GladiatorServiceProvider {
 
-	private final TappedOutBuildService buildService;
-	private Hub hub;
+    private final TappedOutBuilderService buildService;
+    private Hub hub;
 
-	public TappedOutServiceProvider() {
-		buildService = new TappedOutBuildService(this);
-	}
+    public TappedOutServiceProvider() {
+        buildService = new TappedOutBuilderService(this);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return "TappedOut.net";
-	}
+    @Override
+    public String getIdentifier() {
+        return "tappedout.net";
+    }
 
-	@Override
-	public String getLocalizedName() {
-		return hub.localization().string("tappedOut");
-	}
+    @Override
+    public String getLocalizedName() {
+        return hub.localization().string("tappedOut");
+    }
 
-	@Override
-	public Set<GladiatorService> getServices() {
-		return Set.of(buildService);
-	}
+    @Override
+    public Set<GladiatorService> getServices() {
+        return Set.of(buildService);
+    }
 
-	@Override
-	public void initialize(Hub hub) {
-		this.hub = hub;
-	}
+    @Override
+    public void initialize(Hub hub) {
+        this.hub = hub;
+    }
 
 }

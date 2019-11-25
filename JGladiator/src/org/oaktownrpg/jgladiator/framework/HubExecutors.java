@@ -14,14 +14,14 @@ import java.util.concurrent.Callable;
  */
 public interface HubExecutors {
 
-	/**
-	 * Invokes all of the given tasks in the main thread pool.
-	 * <p>
-	 * To be called for most asynchronous tasks.
-	 * 
-	 * @param tasks tasks to invoke
-	 * @throws InterruptedException
-	 */
-	void invokeAll(Collection<Callable<?>> tasks) throws InterruptedException;
+    /**
+     * Invokes all of the given tasks in the main thread pool.
+     * <p>
+     * To be called for most asynchronous tasks.
+     * 
+     * @param tasks tasks to invoke
+     * @throws InterruptedException
+     */
+    void invokeAll(Collection<Callable<?>> tasks) throws InterruptedException;
 
 }

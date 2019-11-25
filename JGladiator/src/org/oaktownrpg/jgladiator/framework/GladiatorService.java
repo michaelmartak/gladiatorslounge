@@ -15,52 +15,62 @@ import java.util.function.Consumer;
  */
 public interface GladiatorService {
 
-	/**
-	 * Returns the service provider for this service
-	 * 
-	 * @return the service provider, never null
-	 */
-	GladiatorServiceProvider getProvider();
+    /**
+     * Returns the service provider for this service
+     * 
+     * @return the service provider, never null
+     */
+    GladiatorServiceProvider getProvider();
 
-	/**
-	 * Returns the identifying string uniquely identifying this service. This
-	 * service should be unique within the context of its service provider (multiple
-	 * service providers, with different names, can provide services with the same
-	 * names).
-	 * 
-	 * @return a unique identifying string, never null
-	 */
-	String getIdentifier();
+    /**
+     * Returns the identifying string uniquely identifying this service. This
+     * service should be unique within the context of its service provider (multiple
+     * service providers, with different names, can provide services with the same
+     * names).
+     * 
+     * @return a unique identifying string, never null
+     */
+    String getIdentifier();
 
-	/**
-	 * Returns the localized name of the service
-	 * 
-	 * @return a localized string, never null
-	 */
-	String getLocalizedName();
+    /**
+     * Returns the localized name of the service
+     * 
+     * @return a localized string, never null
+     */
+    String getLocalizedName();
 
-	/**
-	 * Returns the type of service
-	 * 
-	 * @return an enum type, never null
-	 */
-	ServiceType getType();
+    /**
+     * Returns the type of service
+     * 
+     * @return an enum type, never null
+     */
+    ServiceTypeEnum getType();
 
-	/**
-	 * Called by the hub to initialize the service. Nothing time-intensive should
-	 * happen during initialization.
-	 * 
-	 * @param hub       the hub calling the service
-	 */
-	void initialize(Hub hub);
+    /**
+     * Returns the type-specific functionality of the service
+     * 
+     * @param <T>
+     * @param serviceType the service type, never null
+     * @return the service-specific functionality
+     * @throws ClassCastException if this service does not provide the given type
+     */
+    <T extends ServiceType> T asType(Class<T> serviceType);
 
-	/**
-	 * Called by the hub to start the service.
-	 * 
-	 * @param onFailure callback to invoke if something went wrong with the service
-	 *                  during initialization
-	 * @param onReady   callback to invoke when the service is fully initialized
-	 */
-	void start(Consumer<ServiceFailure> onFailure, Runnable onReady);
+    /**
+     * Called by the hub to initialize the service. Nothing time-intensive should
+     * happen during initialization.
+     * 
+     * @param hub the hub calling the service
+     */
+    void initialize(Hub hub);
+
+    /**
+     * Called by the hub to start the service.
+     * 
+     * @param onFailure callback to invoke if something went wrong with the service
+     *                  during initialization
+     * @param onReady   callback to invoke when the service is fully initialized
+     */
+    void start(Consumer<ServiceFailure> onFailure, Runnable onReady);
 
 }

@@ -14,20 +14,20 @@ import org.oaktownrpg.jgladiator.framework.Localization;
  */
 final class AppLocalization implements Localization {
 
-	private final ResourceBundle resources;
+    private final ResourceBundle resources;
 
-	AppLocalization() {
-		resources = ResourceBundle.getBundle(getClass().getName());
-	}
+    AppLocalization() {
+        resources = ResourceBundle.getBundle(getClass().getName());
+    }
 
-	@Override
-	public String string(String key) {
-		try {
-			return resources.getString(key);
-		} catch (MissingResourceException ex) {
-			Logger.getLogger(getClass().getName()).warning(ex.getMessage());
-			return key + " - NOT FOUND";
-		}
-	}
+    @Override
+    public String string(String key) {
+        try {
+            return resources.getString(key);
+        } catch (MissingResourceException ex) {
+            Logger.getLogger(getClass().getName()).warning(ex.getMessage());
+            return key + " - NOT FOUND";
+        }
+    }
 
 }

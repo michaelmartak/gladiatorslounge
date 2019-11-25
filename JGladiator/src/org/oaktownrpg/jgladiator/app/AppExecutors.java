@@ -19,28 +19,28 @@ import org.oaktownrpg.jgladiator.framework.HubExecutors;
  */
 class AppExecutors implements HubExecutors {
 
-	private static final int MAIN_THREAD_POOL_SIZE = 11;
+    private static final int MAIN_THREAD_POOL_SIZE = 11;
 
-	private final ExecutorService executors = initExecutors();
+    private final ExecutorService executors = initExecutors();
 
-	/**
-	 * 
-	 */
-	AppExecutors() {
-	}
+    /**
+     * 
+     */
+    AppExecutors() {
+    }
 
-	/**
-	 * Starts the executor service
-	 */
-	private ExecutorService initExecutors() {
-		final AtomicInteger increment = new AtomicInteger(0);
-		return Executors.newFixedThreadPool(MAIN_THREAD_POOL_SIZE,
-				(Runnable r) -> new Thread(r, "Gladiator-Exec-" + increment.getAndIncrement()));
-	}
+    /**
+     * Starts the executor service
+     */
+    private ExecutorService initExecutors() {
+        final AtomicInteger increment = new AtomicInteger(0);
+        return Executors.newFixedThreadPool(MAIN_THREAD_POOL_SIZE,
+                (Runnable r) -> new Thread(r, "Gladiator-Exec-" + increment.getAndIncrement()));
+    }
 
-	@Override
-	public void invokeAll(Collection<Callable<?>> tasks) throws InterruptedException {
-		executors.invokeAll(tasks);
-	}
+    @Override
+    public void invokeAll(Collection<Callable<?>> tasks) throws InterruptedException {
+        executors.invokeAll(tasks);
+    }
 
 }

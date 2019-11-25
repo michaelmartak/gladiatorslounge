@@ -5,4 +5,3 @@
  *
  */
 package org.oaktownrpg.jgladiator.app;
-
