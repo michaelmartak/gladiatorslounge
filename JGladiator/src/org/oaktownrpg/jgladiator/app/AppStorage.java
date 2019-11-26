@@ -7,15 +7,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.oaktownrpg.jgladiator.framework.Storage;
 
@@ -27,17 +21,23 @@ import org.oaktownrpg.jgladiator.framework.Storage;
  */
 class AppStorage implements Storage {
 
-    private File homeDirectory = new File(System.getProperty("user.dir"));
-    private File appDirectory = new File(homeDirectory.getAbsolutePath() + File.separator + ".jgladiator");
-    private File credentialStore = new File(appDirectory.getAbsolutePath() + File.separator + "credentials.enc");
+    private final File homeDirectory = new File(System.getProperty("user.dir"));
+    private final File appDirectory = new File(homeDirectory.getAbsolutePath() + File.separator + ".jgladiator");
+    private final File credentialStore = new File(appDirectory.getAbsolutePath() + File.separator + "credentials.enc");
 
     private final AppCryptography crypto = new AppCryptography();
+    private final AppLocalDatabase localDatabase;
 
     /**
      * 
      */
     AppStorage() {
+        localDatabase = new AppLocalDatabase();
+    }
+
+    public void initialize(AppExecutors executors) {
         validateDirectories();
+        localDatabase.initialize(executors);
     }
 
     private void validateDirectories() {
@@ -128,8 +128,7 @@ class AppStorage implements Storage {
         try {
             final String passphrase = crypto.decrypt(property.toString());
             return () -> passphrase;
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-                | BadPaddingException | IOException e) {
+        } catch (Exception e) {
             Logger.getLogger(getClass().getName()).severe("Cannot decrypt passphrase " + e.getMessage());
             return null;
         }

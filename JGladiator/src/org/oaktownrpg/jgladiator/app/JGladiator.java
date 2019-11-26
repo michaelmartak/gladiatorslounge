@@ -48,6 +48,8 @@ public final class JGladiator implements Hub {
      * @throws InvocationTargetException
      */
     private void start() throws InterruptedException, InvocationTargetException {
+        // Initialize storage
+        storage.initialize(executors);
         // Discovery : get all the services. Services must be discovered before the UI
         // starts.
         services.discoverServices();

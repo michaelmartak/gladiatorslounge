@@ -21,7 +21,9 @@ class AppExecutors implements HubExecutors {
 
     private static final int MAIN_THREAD_POOL_SIZE = 11;
 
-    private final ExecutorService executors = initExecutors();
+    private final ExecutorService mainThreadPool = threadPool("Gladiator-Exec-", MAIN_THREAD_POOL_SIZE);
+    private final ExecutorService databaseExecutor = Executors
+            .newSingleThreadExecutor((Runnable r) -> new Thread(r, "Gladiator-Database"));
 
     /**
      * 
@@ -30,17 +32,25 @@ class AppExecutors implements HubExecutors {
     }
 
     /**
-     * Starts the executor service
+     * Creates a thread pool executor
      */
-    private ExecutorService initExecutors() {
+    private static ExecutorService threadPool(final String prefix, final int size) {
         final AtomicInteger increment = new AtomicInteger(0);
-        return Executors.newFixedThreadPool(MAIN_THREAD_POOL_SIZE,
-                (Runnable r) -> new Thread(r, "Gladiator-Exec-" + increment.getAndIncrement()));
+        return Executors.newFixedThreadPool(size, (Runnable r) -> new Thread(r, prefix + increment.getAndIncrement()));
     }
 
     @Override
     public void invokeAll(Collection<Callable<?>> tasks) throws InterruptedException {
-        executors.invokeAll(tasks);
+        mainThreadPool.invokeAll(tasks);
+    }
+
+    /**
+     * Returns the executor to use for the DB connection
+     * 
+     * @return an executor service, never null
+     */
+    public ExecutorService databaseExecutor() {
+        return databaseExecutor;
     }
 
 }
