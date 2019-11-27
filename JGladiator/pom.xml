@@ -11,6 +11,7 @@
 	<url>https://github.com/michaelmartak/gladiatorslounge</url>
 	<properties>
 		<apache.derby.version>10.15.1.3</apache.derby.version>
+        <jaxb.version>2.3.1</jaxb.version>
 		<maven.compiler.release>12</maven.compiler.release>
 	</properties>
 	<dependencies>
@@ -20,6 +21,16 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>com.fasterxml.uuid</groupId>
 			<artifactId>java-uuid-generator</artifactId>

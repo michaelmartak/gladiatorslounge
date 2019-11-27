@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import org.oaktownrpg.jgladiator.app.blob.AppBlobStore;
 import org.oaktownrpg.jgladiator.app.db.AppLocalDatabase;
 import org.oaktownrpg.jgladiator.framework.Storage;
 
@@ -27,6 +28,7 @@ class AppStorage implements Storage {
     private final File credentialStore = new File(appDirectory.getAbsolutePath() + File.separator + "credentials.enc");
 
     private final AppCryptography crypto = new AppCryptography();
+    private final AppBlobStore blobStore;
     private final AppLocalDatabase localDatabase;
 
     /**
@@ -34,11 +36,13 @@ class AppStorage implements Storage {
      */
     AppStorage() {
         localDatabase = new AppLocalDatabase();
+        blobStore = new AppBlobStore();
     }
 
     public void initialize(AppExecutors executors) {
         validateDirectories();
         localDatabase.initialize(executors);
+        blobStore.initialize(appDirectory, executors);
     }
 
     private void validateDirectories() {

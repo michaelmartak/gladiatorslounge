@@ -22,8 +22,8 @@ public class AppExecutors implements HubExecutors {
     private static final int MAIN_THREAD_POOL_SIZE = 11;
 
     private final ExecutorService mainThreadPool = threadPool("Gladiator-Exec-", MAIN_THREAD_POOL_SIZE);
-    private final ExecutorService databaseExecutor = Executors
-            .newSingleThreadExecutor((Runnable r) -> new Thread(r, "Gladiator-Database"));
+    private final ExecutorService databaseExecutor = singleThread("Gladiator-Database");
+    private final ExecutorService blobStorageExecutor = singleThread("Gladiator-Blob-Storage");
 
     /**
      * 
@@ -39,6 +39,16 @@ public class AppExecutors implements HubExecutors {
         return Executors.newFixedThreadPool(size, (Runnable r) -> new Thread(r, prefix + increment.getAndIncrement()));
     }
 
+    /**
+     * Creates a single thread executor
+     * 
+     * @param name the thread name
+     * @return a new executor
+     */
+    private static ExecutorService singleThread(final String name) {
+        return Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, name));
+    }
+
     @Override
     public void invokeAll(Collection<Callable<?>> tasks) throws InterruptedException {
         mainThreadPool.invokeAll(tasks);
@@ -51,6 +61,15 @@ public class AppExecutors implements HubExecutors {
      */
     public ExecutorService databaseExecutor() {
         return databaseExecutor;
+    }
+
+    /**
+     * Returns the executor to use for Blob storage
+     * 
+     * @return an executor service, never null
+     */
+    public ExecutorService blobStorageExecutor() {
+        return blobStorageExecutor;
     }
 
 }
