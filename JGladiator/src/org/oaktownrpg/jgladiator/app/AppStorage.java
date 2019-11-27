@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import org.oaktownrpg.jgladiator.app.db.AppLocalDatabase;
 import org.oaktownrpg.jgladiator.framework.Storage;
 
 /**

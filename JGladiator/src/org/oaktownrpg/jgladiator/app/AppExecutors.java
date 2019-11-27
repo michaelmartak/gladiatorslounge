@@ -17,7 +17,7 @@ import org.oaktownrpg.jgladiator.framework.HubExecutors;
  * @author michaelmartak
  *
  */
-class AppExecutors implements HubExecutors {
+public class AppExecutors implements HubExecutors {
 
     private static final int MAIN_THREAD_POOL_SIZE = 11;
 
