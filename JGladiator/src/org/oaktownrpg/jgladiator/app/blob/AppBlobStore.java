@@ -4,10 +4,17 @@
 package org.oaktownrpg.jgladiator.app.blob;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.oaktownrpg.jgladiator.app.AppExecutors;
 
@@ -33,6 +40,11 @@ public class AppBlobStore {
     }
 
     public void initialize(File appDirectory, AppExecutors executors) {
+        initialize(appDirectory, executors.blobStorageExecutor());
+    }
+
+    void initialize(File appDirectory, ExecutorService executor) {
+        this.executor = executor;
         storeDirectory = new File(appDirectory.getAbsolutePath() + File.separator + "blobs");
         if (!storeDirectory.exists()) {
             try {
@@ -42,7 +54,6 @@ public class AppBlobStore {
                 return;
             }
         }
-        executor = executors.blobStorageExecutor();
     }
 
     /**
@@ -57,8 +68,12 @@ public class AppBlobStore {
     }
 
     void doWrite(final AppBlob blob) {
-        writeMetadata(blob.getMetadata());
-        writeBytes(blob.getId(), blob.getBytes());
+        try {
+            writeMetadata(blob.getMetadata());
+            writeBytes(blob.getId(), blob.getBytes());
+        } catch (FileNotFoundException | JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -73,19 +88,37 @@ public class AppBlobStore {
     }
 
     AppBlob doRead(UUID id) {
-        BlobMetadata metadata = readMetadata(id);
-        byte[] bytes = readBytes(id);
-        return new AppBlob(metadata, bytes);
+        try {
+            BlobMetadata metadata = readMetadata(id);
+            byte[] bytes = readBytes(id);
+            return new AppBlob(metadata, bytes);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void writeMetadata(BlobMetadata metadata) {
-        // TODO Auto-generated method stub
-
+    private void writeMetadata(BlobMetadata metadata) throws FileNotFoundException, JAXBException {
+        UUID id = metadata.getId();
+        File metadataFile = metadataFile(id);
+        JAXBContext context = JAXBContext.newInstance(BlobMetadata.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(metadata, new FileOutputStream(metadataFile));
     }
 
-    private BlobMetadata readMetadata(UUID id) {
-        // TODO Auto-generated method stub
-        return null;
+    private File metadataFile(UUID id) {
+        return new File(metadataFileName(id));
+    }
+
+    private String metadataFileName(UUID id) {
+        return storeDirectory + File.separator + id + ".md";
+    }
+
+    private BlobMetadata readMetadata(UUID id) throws JAXBException {
+        File metadataFile = metadataFile(id);
+        JAXBContext context = JAXBContext.newInstance(BlobMetadata.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        return (BlobMetadata) unmarshaller.unmarshal(metadataFile);
     }
 
     private void writeBytes(UUID id, byte[] bytes) {

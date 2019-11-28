@@ -112,4 +112,47 @@ public class BlobMetadata {
         this.size = size;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((altText == null) ? 0 : altText.hashCode());
+        result = prime * result + ((blobType == null) ? 0 : blobType.hashCode());
+        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + (int) (size ^ (size >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BlobMetadata other = (BlobMetadata) obj;
+        if (altText == null) {
+            if (other.altText != null)
+                return false;
+        } else if (!altText.equals(other.altText))
+            return false;
+        if (blobType != other.blobType)
+            return false;
+        if (fileName == null) {
+            if (other.fileName != null)
+                return false;
+        } else if (!fileName.equals(other.fileName))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (size != other.size)
+            return false;
+        return true;
+    }
+
 }
