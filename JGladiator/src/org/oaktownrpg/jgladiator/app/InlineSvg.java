@@ -24,10 +24,19 @@ public interface InlineSvg {
     }
 
     /**
+     * Returns a Base64 encoded SVG
+     * 
+     * @return an SVG string
+     */
+    String getEncodedSvg();
+
+    /**
      * Returns the representation of this object as an SVG.
      * 
      * @return an SVG string
      */
-    String getSvg();
+    default String getSvg() {
+        return decode(getEncodedSvg());
+    }
 
 }

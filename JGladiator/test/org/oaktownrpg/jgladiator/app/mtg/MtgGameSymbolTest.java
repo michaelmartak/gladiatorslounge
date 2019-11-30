@@ -25,7 +25,7 @@ import org.oaktownrpg.jgladiator.ui.label.LabelBuilder;
  * @author michaelmartak
  *
  */
-public class ManaSymbolTest {
+public class MtgGameSymbolTest {
 
     private static final int SIZE = 50;
     private boolean done;
@@ -33,7 +33,7 @@ public class ManaSymbolTest {
     /**
      * 
      */
-    public ManaSymbolTest() {
+    public MtgGameSymbolTest() {
 
     }
 
@@ -45,8 +45,8 @@ public class ManaSymbolTest {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     done = true;
-                    synchronized (ManaSymbolTest.this) {
-                        ManaSymbolTest.this.notifyAll();
+                    synchronized (MtgGameSymbolTest.this) {
+                        MtgGameSymbolTest.this.notifyAll();
                     }
                 }
 
@@ -60,18 +60,14 @@ public class ManaSymbolTest {
     }
 
     void createFrame(WindowListener windowListener) {
-        JFrame frame = new JFrame("Mana Symbols");
+        JFrame frame = new JFrame("Mtg Game Symbols");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel contents = new JPanel(new FlowLayout(FlowLayout.CENTER));
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("SVG");
         if (!readers.hasNext()) {
             throw new RuntimeException("No SVG reader");
         }
-        for (ManaSymbol symbol : ManaSymbol.values()) {
-            JLabel label = LabelBuilder.svgLabel().bytes(symbol.getSvg().getBytes()).width(SIZE).height(SIZE).build();
-            contents.add(label);
-        }
-        for (GenericManaSymbol symbol : GenericManaSymbol.values()) {
+        for (MtgGameSymbol symbol : MtgGameSymbol.values()) {
             JLabel label = LabelBuilder.svgLabel().bytes(symbol.getSvg().getBytes()).width(SIZE).height(SIZE).build();
             contents.add(label);
         }

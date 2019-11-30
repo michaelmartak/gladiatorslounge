@@ -18,7 +18,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.oaktownrpg.jgladiator.app.mtg.ManaSymbol;
+import org.oaktownrpg.jgladiator.app.mtg.MtgGameSymbol;
 
 /**
  * @author michaelmartak
@@ -40,7 +40,7 @@ public class AppBlobStoreTest {
         AppBlobStore store = new AppBlobStore();
         store.initialize(appDir, Executors.newSingleThreadExecutor());
 
-        byte[] bytes = ManaSymbol.BLACK.getSvg().getBytes();
+        byte[] bytes = MtgGameSymbol.BLACK.getSvg().getBytes();
         BlobMetadata metadata = new BlobMetadata(BlobType.SVG, "black_mana.svg", "Test File", bytes.length);
         AppBlob blob = new AppBlob(metadata, bytes);
         UUID id = blob.getId();

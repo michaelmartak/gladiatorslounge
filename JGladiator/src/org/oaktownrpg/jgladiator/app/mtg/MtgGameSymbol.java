@@ -3,6 +3,12 @@
  */
 package org.oaktownrpg.jgladiator.app.mtg;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import org.oaktownrpg.jgladiator.app.InlineSvg;
 
 /**
@@ -18,7 +24,9 @@ import org.oaktownrpg.jgladiator.app.InlineSvg;
  * @author michaelmartak
  *
  */
-public enum ManaSymbol implements InlineSvg {
+public enum MtgGameSymbol implements InlineSvg {
+
+    /* Color mana */
     /**
      * White mana (plains)
      */
@@ -310,12 +318,257 @@ public enum ManaSymbol implements InlineSvg {
             + "LjI0NHptNi44NjcgMTQuNzQxbC0yLjc0Ni0zLjM3M2MtMS42NjQgMS4xNjct"
             + "My4zNTIgMi4zNTQtNS4wNjEgMy41NjEtMS43MDkgMS4yMDctMy4xODYgMi41"
             + "NjMtNC40MzIgNC4wNiAzLjc0Ny0yLjAwMiA3LjgyOS0zLjQxNCAxMi4yMzkt"
-            + "NC4yNDh6JyBmaWxsPScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo=");
+            + "NC4yNDh6JyBmaWxsPScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo="),
+    /**
+     * Colorless mana symbol
+     */
+    COLORLESS("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyBmaWxsPSdub25lJz48cGF0aCBkPSdNMTAw"
+            + "IDUwYzAgMjcuNjA5LTIyLjM4MiA1MC01MCA1MHMtNTAtMjIuMzkxLTUwLTUw"
+            + "IDIyLjM4Mi01MCA1MC01MCA1MCAyMi4zOTEgNTAgNTB6JyBpZD0nU2hhcGUn"
+            + "IGZpbGw9JyNDQUM1QzAnLz48cGF0aCBkPSdNNDkuNjg3IDEyLjAyNmMyLjQ3"
+            + "NSA0Ljk2OCA1LjUwNCA5Ljc5MyA5LjA5NiAxNC40NzUgMS41MjggMS45NjYg"
+            + "My4yNzkgNC4wMjEgNS4yNTQgNi4xNDcgMS45NDggMi4xMjYgNC4xMSA0LjI1"
+            + "MyA2LjQ1MSA2LjM0NCAyLjM1OSAyLjA5MSA0Ljk0MSA0LjA3NCA3Ljc1NiA1"
+            + "Ljk1MSAyLjgxNSAxLjg3NiA1Ljg0MyAzLjU5MiA5LjA5NiA1LjEyOS00Ljc4"
+            + "IDIuNTU2LTkuNTE2IDUuNjY1LTE0LjIyNSA5LjM0Ni0xLjk1NiAxLjUzNy00"
+            + "LjAwMyAzLjMwNi02LjE0NyA1LjMyNS0yLjEyNiAyLjAwMi00LjIxNyA0LjIt"
+            + "Ni4yNjMgNi41NzYtMi4wNDYgMi40MTItNC4wMTIgNS4wMDQtNS44OTcgNy44"
+            + "MjctMS44NzcgMi44MDYtMy41ODMgNS43OS01LjEyIDguOTUzLTIuMzk1LTQu"
+            + "Ny01LjM3OS05LjM0Ni04Ljk2Mi0xMy45NTYtMy4wNzQtMy45MzEtNi45Ni04"
+            + "LjA1OS0xMS42Ni0xMi40Mi00LjY5MS00LjM2LTEwLjM3My04LjIzOC0xNy4w"
+            + "My0xMS42NTEgNC43ODktMi40ODQgOS41MjUtNS41NTcgMTQuMjI0LTkuMjIx"
+            + "IDQuMDEyLTMuMTYzIDguMTQ5LTcuMTEyIDEyLjQxMS0xMS44NDggNC4yNy00"
+            + "LjczNiA3LjkzMy0xMC4zODMgMTEuMDE2LTE2Ljk3N3ptLTUuNTA0IDUyLjg5"
+            + "NWMyLjIyNSAyLjgyNCA0LjA1NiA1LjY4MyA1LjUwNCA4LjU3OCAxLjg4NS00"
+            + "LjAyMSA0LjE0Ni03LjQ3IDYuNzgxLTEwLjM2NSAyLjY0NS0yLjkxMyA1LjIx"
+            + "OC01LjM0MyA3LjY5My03LjMwOSAyLjgxNC0yLjE5OCA1Ljc1NC00LjEyOCA4"
+            + "LjgzNy01Ljc3Mi00LjEwMS0xLjg1OS03LjU4Ni00LjEyOC0xMC40MzYtNi43"
+            + "NzMtMi44NjgtMi42NDUtNS4yODEtNS4yLTcuMjM3LTcuNjg0LTIuMjI1LTIu"
+            + "ODA1LTQuMTEtNS43OS01LjYzOC04Ljk1My0xLjg3NiA0LjA5Mi00LjEyOCA3"
+            + "LjU5NS02LjcxOSAxMC40OS0yLjYwOSAyLjkxMy01LjE0NiA1LjMyNS03LjYy"
+            + "MiA3LjMwOS0yLjgyMyAyLjIxNi01Ljc2MyA0LjA3NC04LjgzNyA1LjYyOSA0"
+            + "LjEwMSAyLjEyNyA3LjU5NSA0LjUyMSAxMC40OTkgNy4xNjYgMi45MDQgMi42"
+            + "NDUgNS4yOTkgNS4yMTggNy4xNzUgNy42ODR6JyBmaWxsPScjMDAwJy8+PC9n" //
+            + "Pjwvc3ZnPgo="),
+    /* Generic mana */
+    /**
+     * Zero generic mana
+     */
+    ZERO("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyBmaWxsPSdub25lJz48Y2lyY2xlIGZpbGw9"
+            + "JyNDQUM1QzAnIGN4PSc1MCcgY3k9JzUwJyByPSc1MCcvPjxwYXRoIGQ9J00y"
+            + "MyA1Mi40MjhjMC05Ljc4NyAyLjA2MS0xOC44MTMgNi4xOTEtMjcuMDcyIDUu"
+            + "MTE3LTEwLjIzNiAxMi4xMjMtMTUuMzU1IDIxLjAxMi0xNS4zNTUgOC43OTcg"
+            + "MCAxNS42NjYgNC4zNTkgMjAuNjA1IDEzLjA2NCA0LjEyNyA3LjE4NiA2LjE5"
+            + "MSAxNS41MzcgNi4xOTEgMjUuMDUxIDAgOS44ODEtMi4wNjQgMTguODE0LTYu"
+            + "MTkxIDI2LjgwMy01LjAzMSAxMC4wNTgtMTIuMDM1IDE1LjA4MS0yMS4wMTEg"
+            + "MTUuMDgxLTguNTMxIDAtMTUuMzA1LTQuMzA3LTIwLjMzNi0xMi45MjYtNC4z"
+            + "MDgtNy4zNjEtNi40NjEtMTUuNTc2LTYuNDYxLTI0LjY0NnptMTEuMzA5LTQu"
+            + "NDQ0YzAgMTIuOTI2IDEuOTMgMjIuOTg0IDUuNzk1IDMwLjE2OCAyLjY5MSA1"
+            + "LjAyNSA2LjE0NiA3LjU0MSAxMC4zNjcgNy41NDEgMTAuMTQ2IDAgMTUuMjIx"
+            + "LTEwLjUwNiAxNS4yMjEtMzEuNTE4IDAtOS4yNDQtLjgwOS0xNy4wNTktMi40"
+            + "MjItMjMuNDM0LTIuNzg1LTEwLjUwNC03LjQ5OC0xNS43Ni0xNC4xNDUtMTUu"
+            + "NzYtOS44NzkgMC0xNC44MTYgMTAuMTUtMTQuODE2IDMwLjQ0M3YyLjU2eicg" //
+            + "ZmlsbD0nIzBEMEYwRicvPjwvZz48L3N2Zz4K"),
+    /**
+     * One generic mana
+     */
+    ONE("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTU1LjY4NSAxMS4wMDF2"
+            + "NjQuMTA4YzAgNy42NzEgMy4yMjYgMTEuNTA0IDkuNjg3IDExLjUwNGgxLjY4"
+            + "NHY0LjM4OGgtMzQuMTExdi00LjM4OGgyLjE0MWM2LjI0NyAwIDkuMzY5LTMu"
+            + "ODMzIDkuMzY5LTExLjUwNHYtNDIuMDU0YzAtNy43NTgtMi42OTctMTEuNjQz"
+            + "LTguMDgxLTExLjY0M2gtMy40Mjl2LTQuMjQ3aDEuMjM3YzYuNjYgMCAxMi42"
+            + "OTEtMi4wNTcgMTguMDgtNi4xNjVsMy40MjMuMDAxeicgZmlsbD0nIzBEMEYw" //
+            + "RicvPjwvZz48L3N2Zz4K"),
+    /**
+     * Two generic mana
+     */
+    TWO("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTc3LjQ0MiA3MS4xMDNs"
+            + "LTUuODk2IDE5Ljg5OGgtNDguOTkxdi00LjI1NGMyLjM4LTIuNjUyIDcuNTk1"
+            + "LTguMDAxIDE1LjY0Ni0xNi4wNTMgNC44NDktNC44NTIgOS42NDktOS45NzIg"
+            + "MTQuNDA3LTE1LjM3MSAyLjM3OC0yLjY1MSA0LjIxLTQuOTQyIDUuNDg3LTYu"
+            + "ODYyIDIuODM2LTQuMTE0IDQuMjU1LTguMzIgNC4yNTUtMTIuNjI0IDAtNC4y"
+            + "MDQtMS4zMDEtNy45MTItMy45MDgtMTEuMTEyLTIuNjA3LTMuMjA0LTUuOTct"
+            + "NC44MDgtMTAuMDktNC44MDgtOC44NzEgMC0xNS44MjMgNS45OTgtMjAuODU0"
+            + "IDE3Ljk4bC00LjM5NS0xLjY0N2M1Ljk0Ny0xNi44MjkgMTUuMzIxLTI1LjI0"
+            + "OSAyOC4xMzEtMjUuMjQ5IDYuMzEzIDAgMTEuNjg3IDIuMTQ5IDE2LjEyNCA2"
+            + "LjQ0OCA0LjQzOSA0LjMgNi42NTYgOS42MDQgNi42NTYgMTUuOTIgMCA4LjA1"
+            + "Mi00LjYxNyAxNS45MTgtMTMuODU4IDIzLjYwMWwtOS42MDQgNy45NTZjLTYu"
+            + "MTMxIDUuMTI3LTExLjIxMiA5LjkyOS0xNS4yMzEgMTQuNDEyLS4yOC4yNzMt"
+            + "LjgyNi45MTYtMS42NDcgMS45MjFoMjUuNTIxYzMuOTMyIDAgNi45MDctLjc3"
+            + "NiA4LjkxOC0yLjMzNSAxLjczNS0xLjM3MiAzLjQzNC0zLjk4IDUuMDgtNy44"
+            + "MjFoNC4yNDl6JyBmaWxsPScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo="),
+    /**
+     * Three generic mana
+     */
+    THREE("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTM5LjU2MSA1My41NjJs"
+            + "LTIuMDE4LTMuNzcxIDEuMzM3LS44MDdjNS4xNzQtMy4xNDUgOS45MDMtNi4z"
+            + "MyAxNC4xODktOS41NjMgNC4yODQtMy4yMzIgNi40MjctNi45MTUgNi40Mjct"
+            + "MTEuMDQ4IDAtMi43NzgtMS4wMjktNS4xMTItMy4wODUtNi45OTgtMi4wNjEt"
+            + "MS44OTItNC40NzItMi44MzQtNy4yNDQtMi44MzQtNi40MzkgMC0xMy4yMzQg"
+            + "NC4wMDEtMjAuMzkyIDExLjk5MWwtMy4zNTQtMi41NTljNy40NTMtMTEuMzE2"
+            + "IDE2LjU2Ni0xNi45NzQgMjcuMzQxLTE2Ljk3NCA0Ljc1NyAwIDguNzk1IDEu"
+            + "MTY4IDEyLjEyMiAzLjUwMyAzLjc3MSAyLjYwNyA1LjY1NSA2LjE1MyA1LjY1"
+            + "NSAxMC42NDIgMCAzLjIyOS0xLjM0OSA2LjM3NC00LjAzOSA5LjQyNi0xLjUy"
+            + "OCAxLjc5OC00LjIyNiA0LjEzMi04LjA4MyA3LjAwNGwtMS42MTYgMS4yMTNj"
+            + "LjcxOC0uMDg5IDEuNTcyLS4xMzQgMi41Ni0uMTM0IDQuOTM3IDAgOC45OTgg"
+            + "MS44ODcgMTIuMTg4IDUuNjU3IDMuMTg4IDMuNzcxIDQuNzgzIDguMTcgNC43"
+            + "ODMgMTMuMTk2IDAgOC41MzItMy41OTUgMTUuNjY3LTEwLjc3NCAyMS40MTYt"
+            + "Ni42NDcgNS4zODctMTQuMzI1IDguMDc3LTIzLjAzMiA4LjA3Ny03Ljk5MSAw"
+            + "LTE0LjI3Ni0xLjc0OC0xOC44NTgtNS4yNDlsMi40MjktMy4zNzFjNS4zODcg"
+            + "Mi42MDggMTAuMjc5IDMuOTA3IDE0LjY4MSAzLjkwNyA2LjM3MyAwIDEyLjA1"
+            + "MS0yLjEwOSAxNy4wMzItNi4zMyA0Ljk4OC00LjIyIDcuNDc1LTkuNDY5IDcu"
+            + "NDc1LTE1Ljc1NSAwLTQuMTMyLTEuMjU1LTcuNjU1LTMuNzctMTAuNTc2LTIu"
+            + "NTE2LTIuOTE1LTUuNzkzLTQuMzc0LTkuODMyLTQuMzc0LTMuNjg0LjAwMi03"
+            + "LjcyMyAxLjQzNy0xMi4xMjIgNC4zMTF6JyBmaWxsPScjMEQwRjBGJy8+PC9n" //
+            + "Pjwvc3ZnPgo="),
+    /**
+     * Four generic mana
+     */
+    FOUR("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTY0LjI3IDY4LjM1OXY2"
+            + "LjcyM2MwIDcuNjg0IDIuNjk1IDExLjUyNSA4LjA5NCAxMS41MjVoMi4zM3Y0"
+            + "LjM5NGgtMzIuNjU4di00LjM5NGgyLjYwN2M1LjMwMyAwIDcuOTYxLTMuNzk4"
+            + "IDcuOTYxLTExLjM5MnYtNi44NTZoLTMyLjc5NXYtNi44NjFsMzQuNTc4LTUw"
+            + "LjQ5N2g5Ljg4M3Y1MS41OTJoLjgyYzMuMzgzIDAgNS44NTItMi42MDggNy40"
+            + "MDgtNy44MTZoNC4xMTVsLTEuOTIgMTMuNTgzLTEwLjQyMy0uMDAxem0tMTEu"
+            + "NjY2LTUuNzY2di00MS40NThsLTI3Ljg5MyA0MS40NThoMjcuODkzeicgZmls" //
+            + "bD0nIzBEMEYwRicvPjwvZz48L3N2Zz4K"),
+    /**
+     * Five generic mana
+     */
+    FIVE("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTM0Ljk1NyAxMi4zNTJo"
+            + "MjguOTQxYzMuNzU0IDAgNS45ODgtLjQ1IDYuNzAzLTEuMzUyaDQuMTU2bC0y"
+            + "LjQyMiAxMC45MjVoLTM1LjMxNGwtMy40MDggMTUuNzg5YzUuMTI3LTIuMDcg"
+            + "OS42NjgtMy4xMDQgMTMuNjI1LTMuMTA0IDcuNzI5IDAgMTQuMjUgMi41ODcg"
+            + "MTkuNTU5IDcuNzU4IDUuMzA1IDUuMTcxIDcuOTYxIDExLjYyMiA3Ljk2MSAx"
+            + "OS4zNTcgMCA4Ljk5Ni0zLjQ2NSAxNi4yMzctMTAuMzk0IDIxLjcyMi02LjM4"
+            + "NSA1LjAzOS0xNC4xNjIgNy41NTMtMjMuMzM4IDcuNTUzLTUuMzk1IDAtMTAu"
+            + "NjYtLjgwOC0xNS43ODUtMi40MjZsMS42MTctNC4wNDZjNC4zMiAxLjE2OSA4"
+            + "LjE0MSAxLjc1MSAxMS40NjkgMS43NTEgNi42NTQgMCAxMi40NzctMi4xOCAx"
+            + "Ny40NzMtNi41NDQgNC45OS00LjM1OCA3LjQ4OC05LjgyNiA3LjQ4OC0xNi4z"
+            + "OTIgMC01LjY2NS0xLjg0NC0xMC4zMi01LjUzMy0xMy45NTktMy42ODktMy42"
+            + "NDYtOC4zNjUtNS40NjgtMTQuMDMzLTUuNDY4LTUuMjEzIDAtMTAuMDcgMS44"
+            + "LTE0LjU2OCA1LjM5NmwtMi43MDEtLjUzOCA4LjUwNC0zNi40MjJ6JyBmaWxs" //
+            + "PScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo="),
+    /**
+     * Six generic mana
+     */
+    SIX("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTM2LjU4IDQ1LjY3NWM1"
+            + "LjkzNC01LjU3NyAxMS45MS04LjM2NCAxNy45MzktOC4zNjQgNi41NjQgMCAx"
+            + "MS44MjggMi42MDYgMTUuNzg3IDcuODIxIDMuNjgyIDQuNzcgNS41MjkgMTAu"
+            + "NTIxIDUuNTI5IDE3LjI3IDAgNy4zNzYtMi4xNTggMTMuODQ5LTYuNDc1IDE5"
+            + "LjQyNS00Ljc2OCA2LjExNC0xMC43MDMgOS4xNzQtMTcuODA3IDkuMTc0LTgu"
+            + "NTQ3IDAtMTUuMzgxLTMuNjktMjAuNTA0LTExLjA2My00LjU5LTYuNDc3LTYu"
+            + "ODgzLTE0LjE2Ny02Ljg4My0yMy4wNzEgMC05LjQ0IDIuNjA3LTE4LjE0MSA3"
+            + "LjgyNC0yNi4xMDEgNS4yMTMtNy45NTggMTIuMTg0LTEzLjYwMiAyMC45MDYt"
+            + "MTYuOTI4IDQuOTQ3LTEuODg4IDEwLjE2OC0yLjgzOSAxNS42NS0yLjgzOXY0"
+            + "LjE4NGMtMTEuNjkxLjYzMS0yMC40MTQgNS4zMDgtMjYuMTc0IDE0LjAzMS0y"
+            + "Ljk1OCA0LjUwMS00Ljg5NSA5Ljk4My01Ljc5MiAxNi40NjF6bS0uODEyIDgu"
+            + "MDkyYy0uMDg2IDEuNjE4LS4xMzMgMy4yMzgtLjEzMyA0Ljg1NyAwIDYuMjAz"
+            + "IDEuMDc4IDExLjk2IDMuMjM2IDE3LjI2OSAyLjc4NSA2LjkyMiA2Ljg4MyAx"
+            + "MC4zODUgMTIuMjc5IDEwLjM4NSA0LjY3NCAwIDguMTgtMi4zODEgMTAuNTIt"
+            + "Ny4xNTEgMS43OTctMy42ODQgMi42OTctOC4xMzUgMi42OTctMTMuMzU1IDAt"
+            + "NS41NzEtLjg1Ny0xMC4zNDItMi41NjMtMTQuMjk5LTIuMzQtNS4zOTYtNS45"
+            + "MzYtOC4wOTItMTAuNzkzLTguMDkyLTUuOTMzLS4wMDEtMTEuMDE3IDMuNDY0"
+            + "LTE1LjI0MyAxMC4zODZ6JyBmaWxsPScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo="),
+    /**
+     * Seven generic mana
+     */
+    SEVEN("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTUzLjQ5NCA5MWgtMTEu"
+            + "NjQzdi0xLjIzOGMwLTcuMzk2IDIuMzI4LTE2LjY1OSA2Ljk4LTI3LjgwOCA3"
+            + "LjAzNS0xNi43OTkgMTMuNTItMjkuNjczIDE5LjQ1My0zOC42MjRsLjgyMi0x"
+            + "LjIzMmgtMjcuMjU2Yy0zLjkzIDAtNi45Mi44MTktOC45NzUgMi40NjMtMi4w"
+            + "NTkgMS42NDUtMy41ODIgNC4zODctNC41ODYgOC4yMjJoLTQuNTJsNC45MjYt"
+            + "MjEuNzgyaDIuODgxYzEuNzM0LjkxNCA0Ljc0MiAxLjM3MSA5LjA0MSAxLjM3"
+            + "MWgzNS42MDl2Ni4xNjVjLTEuMjc1IDEuODI5LTIuOTE4IDQuNzUtNC45MjYg"
+            + "OC43NjgtMy44MzggNy40ODUtNy4zNTIgMTYuMjA4LTEwLjU1MyAyNi4xNjMt"
+            + "NC43NDMgMTQuNzAyLTcuMTYzIDI3LjIwOS03LjI1MyAzNy41MzJ6JyBmaWxs" //
+            + "PScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo="),
+    /**
+     * X generic mana
+     */
+    X("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyBmaWxsPSdub25lJz48cGF0aCBkPSdNMTAw"
+            + "IDQ5Ljk5OGMwIDI3LjYxNS0yMi4zODMgNTAuMDAyLTUwIDUwLjAwMi0yNy42"
+            + "MTMgMC01MC0yMi4zODctNTAtNTAuMDAyIDAtMjcuNjEzIDIyLjM4Ny00OS45"
+            + "OTggNTAtNDkuOTk4IDI3LjYxNyAwIDUwIDIyLjM4NSA1MCA0OS45OTh6JyBp"
+            + "ZD0nU2hhcGUnIGZpbGw9JyNDQUM1QzAnLz48cGF0aCBkPSdNNTYuNjQxIDgw"
+            + "di0zLjI5N2M0LjcwMy0uNTIxIDcuMDU5LTEuODg3IDcuMDU5LTQuMDgyIDAt"
+            + "MS41ODItLjYyOS0zLjE2NC0xLjg4My00Ljc0NmwtMTMuMDA4LTE2LjAxLTEw"
+            + "LjI3MyAxMi4xMTFjLTIuNTcgMi45NzMtMy44NjMgNS40MzItMy44NjMgNy4z"
+            + "NTQgMCAyLjk3NiAyLjM1NCA0Ljc3MSA3LjA3IDUuMzg3djMuMjgzaC0yNS4w"
+            + "NTF2LTMuMjg3YzMuMTcyLS42MDkgNS44NjctMS43NTIgOC4xMDItMy40MTYg"
+            + "MS41MzktMS4yMjMgMy42MzctMy4zNzEgNi4yODUtNi40MzhsMTUuNDQ5LTE3"
+            + "LjkxNS0xNy44NjctMjEuNjZjLTIuMzE1LTIuNzk3LTQuMTIxLTQuNjMzLTUu"
+            + "NDAxLTUuNTEtMS43MjQtMS4yMjUtNC4xMjEtMi4wMTItNy4yMDMtMi4zNjF2"
+            + "LTMuNDEzaDI5LjUzOXYzLjI4NWMtNC40NTMuODc3LTYuNjc2IDIuMjM0LTYu"
+            + "Njc2IDQuMDc0IDAgMS4yMy41OTQgMi41ODYgMS43OTMgNC4wNzJsMTEuODE2"
+            + "IDE0LjMyMiA5LjUwOC0xMS42OTFjMS43MTEtMi4xMDQgMi41Ny0zLjk0MSAy"
+            + "LjU3LTUuNTIgMC0yLjYyOS0yLjEwNS00LjM0LTYuMzAxLTUuMTI5di0zLjQx"
+            + "M2gyMy41MTJ2My4yOTFjLTIuMDU1LjQzOS0zLjQ3My44MzQtNC4yMyAxLjE4"
+            + "OC0yLjU3IDEuMjI5LTYuNDk2IDQuODY5LTExLjc5NyAxMC45Mi0uODUyLjk2"
+            + "OS00LjQ1MyA1LjM5My0xMC43ODkgMTMuMjg1bDE4Ljk3NyAyMy4zNjNjNC4x"
+            + "MTMgNS4wNzggOC4zMDUgNy45NzEgMTIuNTg2IDguNjY2djMuMjg3aC0yOS45"
+            + "MjR6JyBmaWxsPScjMEQwRjBGJy8+PC9nPjwvc3ZnPgo="),
+    /**
+     * Tap symbol
+     */
+    TAP("PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdC"
+            + "b3g9JzAgMCAxMDAgMTAwJz48ZyB0cmFuc2Zvcm09J3RyYW5zbGF0ZSgwIC0x"
+            + "KScgZmlsbD0nbm9uZSc+PGNpcmNsZSBmaWxsPScjQ0FDNUMwJyBjeD0nNTAn"
+            + "IGN5PSc1MC45OTgnIHI9JzUwJy8+PHBhdGggZD0nTTg1LjMzMiA1OS45MTho"
+            + "LTM2LjAwNGwxMy4xODUtOS4zODNjLTQuODk4LTMuODg3LTEwLjU2Ni01Ljgy"
+            + "OC0xNi45ODQtNS44MjgtMy4yMTEgMC01LjQxNC42MTMtNi41OSAxLjgzNi0x"
+            + "LjE4NCAxLjIyNy0xLjc3NyAzLjQ0NS0xLjc3NyA2LjY1NCAwIDguODczIDQu"
+            + "NTYzIDE4LjM0IDEzLjY5MSAyOC4zOTZsLTEwLjM5MSAxMC41MjFjLTEyLjA5"
+            + "LTE0LjcwNS0xOC4xMjktMjcuODQ0LTE4LjEyOS0zOS40MjQgMC02LjkyOCAy"
+            + "LjA4Ni0xMi40NDcgNi4yNy0xNi41NDUgNC4xOC00LjA5OCA5Ljc0Ni02LjE0"
+            + "OCAxNi42NjgtNi4xNDggOC40NTMgMCAxNy42NjQgMy4yMTUgMjcuNjQxIDku"
+            + "NjM1bDcuNzI4LTEzLjE4MiA0LjY5MiAzMy40Njh6JyBmaWxsPScjMEQwRjBG" //
+            + "Jy8+PC9nPjwvc3ZnPgo="),
+    //
+    ;
 
+    public static final Set<MtgGameSymbol> COLOR_MANA = Collections
+            .unmodifiableSet(EnumSet.of(WHITE, BLUE, BLACK, RED, GREEN));
+    public static final Set<MtgGameSymbol> GENERIC_MANA = Collections
+            .unmodifiableSet(EnumSet.of(ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX));
+    public static final List<MtgGameSymbol> GENERIC_MANA_LIST = Collections
+            .unmodifiableList(new ArrayList<>(GENERIC_MANA));
+
+    private final String encoded;
     private final String svg;
 
-    private ManaSymbol(String encoded) {
+    private MtgGameSymbol(String encoded) {
+        this.encoded = encoded;
         this.svg = InlineSvg.decode(encoded);
+    }
+
+    @Override
+    public String getEncodedSvg() {
+        return encoded;
     }
 
     @Override
