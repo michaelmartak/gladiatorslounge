@@ -1,0 +1,59 @@
+TODOs
+
+Something like JIRA would be overkill with this project, so I'm listing the remaining work, etc., in this plain
+text file.
+
+These tasks aren't in any order, so I'm not bothering with numbers.
+
+ + Externalize the game symbols as SVGs.  Right now everything is inline and encoded, because that's how they
+ were found.  They should be decoded (they are already being decoded programmatically) and externalized into SVG files.
+ 
+ + Read the SVG files and implement SVG scaling properly.  Right now we are using Transforms (Graphics2D) for
+ scaling.  But the whole point of the "S" in SVG is that they have scaling built-in.  The batik tools have useful ways
+ to do this, but I haven't had the time to figure out JSVGCanvas or SVGDocument.
+ 
+ + The BLOB store should have a built in read-only store as well as the temporary cache-style one we have created.
+ Ideally all of the SVGs and other external resource files should live there.  But I'm also OK with resources in
+ JARs / target as well, if that's easier.
+ 
+ + BLOB readBytes() hasn't been implemented yet.  Also update the unit test to validate the byte contents from read.
+ 
+ + Scrape scryfall for the catalog.  We need one source of truth for import of the MtG catalog, and scryfall's is
+ the most up to date and organized.  Scraping should be idempotent and we should be able to scrape incremental updates.
+ Ideally scraping would be a background task, but manual scraping is the best first step.
+ 
+ + Text autocomplete from the catalog.  This is one of the most important tasks, and is very difficult to do right.
+ I'm agnostic about search indexing libraries (the right one matters though).  Autocomplete should work in "offline"
+ mode (NO internet connection required).
+ 
+ + Proper error handling framework.  Right now Logger.severe() is OK, but errors should be reported back to the Hub.
+ 
+ + Deck builder UI.  Say no more.
+ 
+ + Wizards : gatherer search, both Simple and Advanced.
+ 
+ + Scryfall : besides scraping the catalog, Scryfall provides some other cool and useful services, such as
+ accounts and a deck builder.  Random card.  Current price and links to other services (which me may want to
+ consider incorporating at some point).
+ 
+ + Tappedout.net : synchronizing the deck builder.
+ 
+ + EDHREC : card analysis (for now).  Also has news and other useful things.
+ 
+ + Pucatrade : trading market.  Ability to set price / trade.
+ 
+ + TCGPlayer : up to date prices.  Ability to purchase.
+ 
+ + News / RSS : very low in priority, but useful.
+
+ + Evaluate JCEF (Java Chromium Embedded Framework).  Rather than connect to all of these services (whose endpoints
+ may change) it might make more sense to embed Chrome and let Chrome do all the work.  Given what it takes to build
+ JCEF, it might not be worth it.  "Why didn't I just build this as a Chrome extension in the first place?"  Well,
+ just look at all the crap I'm trying to do here.  We're way too heavyweight for a Chrome extension.
+ 
+ + The "Killer Use Case".  Once the deck builder UI is looking sweet, pulling in suggestions from EDHREC and
+ prices from TCGPlayer would let us build a killer virtual deck, purchase the cards, or make suggestions within
+ budgets.
+ 
+ + Ability to process Oracle text using machine learning.  There is even potential to playtest vs. a player or AI
+ 

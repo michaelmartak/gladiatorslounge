@@ -62,7 +62,7 @@ public class MtgGameSymbolTest {
 
     void createFrame(WindowListener windowListener) {
         JFrame frame = new JFrame("Mtg Game Symbols");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel contents = new JPanel(new FlowLayout(FlowLayout.CENTER));
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("SVG");
         if (!readers.hasNext()) {
