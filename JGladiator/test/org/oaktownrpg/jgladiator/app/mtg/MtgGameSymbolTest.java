@@ -3,6 +3,7 @@
  */
 package org.oaktownrpg.jgladiator.app.mtg;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
@@ -72,6 +73,7 @@ public class MtgGameSymbolTest {
             contents.add(label);
         }
         frame.addWindowListener(windowListener);
+        contents.setPreferredSize(new Dimension(760, 400));
         frame.setContentPane(contents);
         frame.pack();
         frame.setLocationRelativeTo(null);
