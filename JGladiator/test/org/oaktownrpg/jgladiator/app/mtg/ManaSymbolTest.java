@@ -71,6 +71,10 @@ public class ManaSymbolTest {
             JLabel label = LabelBuilder.svgLabel().bytes(symbol.getSvg().getBytes()).width(SIZE).height(SIZE).build();
             contents.add(label);
         }
+        for (GenericManaSymbol symbol : GenericManaSymbol.values()) {
+            JLabel label = LabelBuilder.svgLabel().bytes(symbol.getSvg().getBytes()).width(SIZE).height(SIZE).build();
+            contents.add(label);
+        }
         frame.addWindowListener(windowListener);
         frame.setContentPane(contents);
         frame.pack();

@@ -3,7 +3,7 @@
  */
 package org.oaktownrpg.jgladiator.app.mtg;
 
-import java.util.Base64;
+import org.oaktownrpg.jgladiator.app.InlineSvg;
 
 /**
  * Mana symbols.
@@ -18,7 +18,7 @@ import java.util.Base64;
  * @author michaelmartak
  *
  */
-public enum ManaSymbol {
+public enum ManaSymbol implements InlineSvg {
     /**
      * White mana (plains)
      */
@@ -315,14 +315,10 @@ public enum ManaSymbol {
     private final String svg;
 
     private ManaSymbol(String encoded) {
-        this.svg = new String(Base64.getDecoder().decode(encoded.getBytes()));
+        this.svg = InlineSvg.decode(encoded);
     }
 
-    /**
-     * Returns the representation of this mana symbol as an SVG.
-     * 
-     * @return an SVG string
-     */
+    @Override
     public String getSvg() {
         return svg;
     }
