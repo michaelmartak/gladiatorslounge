@@ -6,6 +6,8 @@ package org.oaktownrpg.jgladiator.app.blob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -71,7 +73,7 @@ public class AppBlobStore {
         try {
             writeMetadata(blob.getMetadata());
             writeBytes(blob.getId(), blob.getBytes());
-        } catch (FileNotFoundException | JAXBException e) {
+        } catch (JAXBException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -110,8 +112,16 @@ public class AppBlobStore {
         return new File(metadataFileName(id));
     }
 
+    private File byteFile(UUID id) {
+        return new File(byteFileName(id));
+    }
+
     private String metadataFileName(UUID id) {
         return storeDirectory + File.separator + id + ".md";
+    }
+
+    private String byteFileName(UUID id) {
+        return storeDirectory + File.separator + id + ".dat";
     }
 
     private BlobMetadata readMetadata(UUID id) throws JAXBException {
@@ -121,9 +131,9 @@ public class AppBlobStore {
         return (BlobMetadata) unmarshaller.unmarshal(metadataFile);
     }
 
-    private void writeBytes(UUID id, byte[] bytes) {
-        // TODO Auto-generated method stub
-
+    private void writeBytes(UUID id, byte[] bytes) throws IOException {
+        File byteFile = byteFile(id);
+        Files.write(byteFile.toPath(), bytes);
     }
 
     private byte[] readBytes(UUID id) {
