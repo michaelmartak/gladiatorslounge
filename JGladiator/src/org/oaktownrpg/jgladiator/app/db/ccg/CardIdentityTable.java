@@ -11,6 +11,10 @@ import org.oaktownrpg.jgladiator.app.db.annotation.NotNull;
 import org.oaktownrpg.jgladiator.app.db.annotation.PrimaryKey;
 
 /**
+ * Identity of a unique card within a Ccg. Things such as "rules" printed in a
+ * card are generally associated with its identity, not a specific printing of a
+ * card.
+ * 
  * @author michaelmartak
  *
  */
@@ -23,12 +27,25 @@ enum CardIdentityTable {
     @ForeignKey(table = "CCG", fields = "CCG_ID")
     CCG_ID,
 
+    /**
+     * Unique identifier for a card within a Ccg.
+     */
     @DatabaseColumn(type = DataType.VARCHAR, max = 255)
     @NotNull
     @PrimaryKey
     CARD_ID,
-    
+
+    /**
+     * The (up to date) rules text for a card. Does not include rules clarifications
+     * or interpretations.
+     */
     @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
-    ORACLE_TEXT
+    ORACLE_TEXT,
+
+    /**
+     * Last update of this card's identity in the database
+     */
+    @DatabaseColumn(type = DataType.TIMESTAMP)
+    LAST_UPDATE
 
 }

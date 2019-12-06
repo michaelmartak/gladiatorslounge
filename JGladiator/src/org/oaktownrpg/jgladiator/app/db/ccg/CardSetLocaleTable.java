@@ -5,14 +5,18 @@ package org.oaktownrpg.jgladiator.app.db.ccg;
 
 import org.oaktownrpg.jgladiator.app.db.annotation.DataType;
 import org.oaktownrpg.jgladiator.app.db.annotation.DatabaseColumn;
+import org.oaktownrpg.jgladiator.app.db.annotation.DatabaseTableDefinition;
 import org.oaktownrpg.jgladiator.app.db.annotation.ForeignKey;
 import org.oaktownrpg.jgladiator.app.db.annotation.NotNull;
 import org.oaktownrpg.jgladiator.app.db.annotation.PrimaryKey;
 
 /**
+ * The locales that are available for a specific card set.
+ * 
  * @author michaelmartak
  *
  */
+@DatabaseTableDefinition
 enum CardSetLocaleTable {
 
     @DatabaseColumn(type = DataType.VARCHAR, max = 3)

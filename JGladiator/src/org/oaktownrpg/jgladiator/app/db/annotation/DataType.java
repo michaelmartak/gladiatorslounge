@@ -11,7 +11,7 @@ package org.oaktownrpg.jgladiator.app.db.annotation;
  */
 public enum DataType {
 
-    BOOLEAN, DATE, INTEGER, VARCHAR;
+    BOOLEAN, DATE, INTEGER, TIMESTAMP, VARCHAR;
 
     /**
      * Whether the given datatype supports "max" specification.

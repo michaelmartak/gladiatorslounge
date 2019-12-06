@@ -34,14 +34,10 @@ public class CcgSchemaProcessor {
         try {
             if (TableOperations.tableExists(connection, CcgSchema.CCG)) {
                 // FIXME should just return. DROPPING tables now
-                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_PRINT);
-                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_LEGALITY);
-                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_IDENTITY);
-                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_SET_LOCALE);
-                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_SET);
-                TableOperations.dropTableIfExists(connection, CcgSchema.CCG_FORMAT);
-                TableOperations.dropTableIfExists(connection, CcgSchema.LOCALE);
-                TableOperations.dropTableIfExists(connection, CcgSchema.CCG);
+                final CcgSchema[] tables = CcgSchema.values();
+                for (int i = tables.length - 1; i >= 0; i--) {
+                    TableOperations.dropTableIfExists(connection, tables[i]);
+                }
                 // Table already exists
                 // return;
             }
