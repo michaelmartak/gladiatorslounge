@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.AppExecutors;
+import org.oaktownrpg.jgladiator.app.db.ccg.CcgSchemaProcessor;
 
 /**
  * Local database storage
@@ -26,7 +27,7 @@ public class AppLocalDatabase {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private ExecutorService databaseExecutor;
     private Connection connection;
-    private final CcgSchema ccgSchema = new CcgSchema();
+    private final CcgSchemaProcessor ccgSchema = new CcgSchemaProcessor();
 
     /**
      * 
