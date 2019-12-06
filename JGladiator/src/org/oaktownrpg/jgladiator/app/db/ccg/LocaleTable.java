@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package org.oaktownrpg.jgladiator.app.db.ccg;
 
 import org.oaktownrpg.jgladiator.app.db.annotation.DataType;
@@ -6,18 +9,16 @@ import org.oaktownrpg.jgladiator.app.db.annotation.NotNull;
 import org.oaktownrpg.jgladiator.app.db.annotation.PrimaryKey;
 
 /**
- * Table definition for the CCG table.
- * <p/>
- * A collectible card game, virtual or otherwise.
+ * Columns in the locale table.
  * 
  * @author michaelmartak
  *
  */
-enum CcgTable {
+enum LocaleTable {
 
-    @DatabaseColumn(type = DataType.VARCHAR, max = 3)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 6)
     @NotNull
     @PrimaryKey
-    CCG_ID
+    LOCALE_CODE
 
 }

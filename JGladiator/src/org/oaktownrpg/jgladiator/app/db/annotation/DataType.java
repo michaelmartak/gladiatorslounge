@@ -1,18 +1,24 @@
 /**
  * 
  */
-package org.oaktownrpg.jgladiator.app.db;
+package org.oaktownrpg.jgladiator.app.db.annotation;
 
 /**
- * Database value types.
+ * Supported database value types.
  * 
  * @author michaelmartak
  *
  */
 public enum DataType {
 
-    DATE, VARCHAR, INTEGER, BOOLEAN;
+    BOOLEAN, DATE, INTEGER, VARCHAR;
 
+    /**
+     * Whether the given datatype supports "max" specification.
+     * 
+     * @param dataType
+     * @return
+     */
     public static boolean isMax(DataType dataType) {
         switch (dataType) {
         case VARCHAR:

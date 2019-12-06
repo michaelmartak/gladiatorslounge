@@ -7,9 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import org.oaktownrpg.jgladiator.app.db.BuilderException;
 import org.oaktownrpg.jgladiator.app.db.SchemaBuilder;
 import org.oaktownrpg.jgladiator.app.db.TableOperations;
+import org.oaktownrpg.jgladiator.util.BuilderException;
 
 /**
  * Schema processor for CCG games
@@ -32,16 +32,16 @@ public class CcgSchemaProcessor {
      */
     public void ensureSchema(Connection connection) {
         try {
-            if (TableOperations.tableExists(connection, CcgTable.CCG)) {
+            if (TableOperations.tableExists(connection, CcgSchema.CCG)) {
                 // FIXME should just return. DROPPING tables now
-                TableOperations.dropTableIfExists(connection, CcgTable.CARD_PRINT);
-                TableOperations.dropTableIfExists(connection, CcgTable.CARD_LEGALITY);
-                TableOperations.dropTableIfExists(connection, CcgTable.CARD_IDENTITY);
-                TableOperations.dropTableIfExists(connection, CcgTable.CARD_SET_LOCALE);
-                TableOperations.dropTableIfExists(connection, CcgTable.CARD_SET);
-                TableOperations.dropTableIfExists(connection, CcgTable.CCG_FORMAT);
-                TableOperations.dropTableIfExists(connection, CcgTable.LOCALE);
-                TableOperations.dropTableIfExists(connection, CcgTable.CCG);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_PRINT);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_LEGALITY);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_IDENTITY);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_SET_LOCALE);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CARD_SET);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CCG_FORMAT);
+                TableOperations.dropTableIfExists(connection, CcgSchema.LOCALE);
+                TableOperations.dropTableIfExists(connection, CcgSchema.CCG);
                 // Table already exists
                 // return;
             }
@@ -85,7 +85,7 @@ public class CcgSchemaProcessor {
     }
 
     private void createSchema(Connection connection) throws SQLException, BuilderException {
-        new SchemaBuilder(CcgTable.class).build(connection);
+        new SchemaBuilder(CcgSchema.class).build(connection);
         logger.info("Created DB schema");
     }
 

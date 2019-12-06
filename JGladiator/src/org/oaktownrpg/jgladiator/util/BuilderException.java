@@ -1,10 +1,10 @@
 /**
  * 
  */
-package org.oaktownrpg.jgladiator.app.db;
+package org.oaktownrpg.jgladiator.util;
 
 /**
- * Exception during DB schema building.
+ * Checked exception while using a builder pattern.
  * 
  * @author michaelmartak
  *

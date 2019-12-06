@@ -3,17 +3,17 @@
  */
 package org.oaktownrpg.jgladiator.app.db.ccg;
 
-import org.oaktownrpg.jgladiator.app.db.DataType;
-import org.oaktownrpg.jgladiator.app.db.DatabaseColumn;
-import org.oaktownrpg.jgladiator.app.db.ForeignKey;
-import org.oaktownrpg.jgladiator.app.db.NotNull;
-import org.oaktownrpg.jgladiator.app.db.PrimaryKey;
+import org.oaktownrpg.jgladiator.app.db.annotation.DataType;
+import org.oaktownrpg.jgladiator.app.db.annotation.DatabaseColumn;
+import org.oaktownrpg.jgladiator.app.db.annotation.ForeignKey;
+import org.oaktownrpg.jgladiator.app.db.annotation.NotNull;
+import org.oaktownrpg.jgladiator.app.db.annotation.PrimaryKey;
 
 /**
  * @author michaelmartak
  *
  */
-enum CcgFormatTableColumn {
+enum CcgFormatTable {
 
     @DatabaseColumn(type = DataType.VARCHAR, max = 3)
     @NotNull

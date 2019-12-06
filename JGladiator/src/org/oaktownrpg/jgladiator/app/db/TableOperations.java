@@ -6,6 +6,8 @@ package org.oaktownrpg.jgladiator.app.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.oaktownrpg.jgladiator.util.BuilderException;
+
 /**
  * Database table operations. Handles interaction between our table definitions
  * and SQL.
