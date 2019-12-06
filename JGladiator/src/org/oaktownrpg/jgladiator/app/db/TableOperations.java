@@ -31,4 +31,8 @@ public final class TableOperations {
         Sql.dropTableIfExists(connection, SchemaBuilder.sqlTableName(table));
     }
 
+    public static InsertPredicate insert(Enum<?> table) throws BuilderException {
+        return new InsertPredicate(table);
+    }
+
 }

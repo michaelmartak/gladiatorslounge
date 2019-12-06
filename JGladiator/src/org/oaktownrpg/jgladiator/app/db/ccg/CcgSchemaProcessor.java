@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.db.SchemaBuilder;
 import org.oaktownrpg.jgladiator.app.db.TableOperations;
+import org.oaktownrpg.jgladiator.framework.mtg.MtgFormat;
 import org.oaktownrpg.jgladiator.util.BuilderException;
 
 /**
@@ -31,6 +32,7 @@ public class CcgSchemaProcessor {
      * Check the status of the DB schema and create tables, if necessary
      */
     public void ensureSchema(Connection connection) {
+        String fault = "Could not check existence of table ";
         try {
             if (TableOperations.tableExists(connection, CcgSchema.CCG)) {
                 // FIXME should just return. DROPPING tables now
@@ -41,42 +43,37 @@ public class CcgSchemaProcessor {
                 // Table already exists
                 // return;
             }
-        } catch (SQLException | BuilderException e) {
-            logger.severe("Could not check existence of table " + e.getMessage());
-        }
-        try {
+            fault = "Could not create schema ";
             createSchema(connection);
-        } catch (SQLException | BuilderException e) {
-            logger.severe("Could not create schema " + e.getMessage());
-            return;
-        }
-        try {
+            fault = "Could not insert default data ";
             insertDefaultData(connection);
-        } catch (SQLException e) {
-            logger.severe("Could not insert default data " + e.getMessage());
-            return;
+        } catch (SQLException | BuilderException e) {
+            logger.severe(fault + e.getMessage());
         }
     }
 
-    private void insertDefaultData(Connection connection) throws SQLException {
+    private void insertDefaultData(Connection connection) throws SQLException, BuilderException {
         // CCG
-//        insert(connection, CcgTable.CCG, "MTG");
-//        // Languages
-//        insert(connection, CcgTable.LOCALE, "en");
-//        insert(connection, CcgTable.LOCALE, "es");
-//        insert(connection, CcgTable.LOCALE, "fr");
-//        insert(connection, CcgTable.LOCALE, "de");
-//        insert(connection, CcgTable.LOCALE, "it");
-//        insert(connection, CcgTable.LOCALE, "pt");
-//        insert(connection, CcgTable.LOCALE, "ja");
-//        insert(connection, CcgTable.LOCALE, "ko");
-//        insert(connection, CcgTable.LOCALE, "ru");
-//        insert(connection, CcgTable.LOCALE, "zhCN"); // zhs, or Simplified Chinese
-//        insert(connection, CcgTable.LOCALE, "zhTW"); // zht, or Traditional Chinese
-//        // CCG Formats
-//        for (MtgFormat format : MtgFormat.values()) {
-//            insert(connection, CcgTable.CCG_FORMAT, "MTG", format.name());
-//        }
+        TableOperations.insert(CcgSchema.CCG).value(CcgTable.CCG_ID, "MTG").execute(connection);
+        // Languages
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "en").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "es").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "fr").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "de").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "it").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "pt").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "ja").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "ko").execute(connection);
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "ru").execute(connection);
+        // zhs, or Simplified Chinese
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "zhCN").execute(connection);
+        // zht, or Traditional Chinese
+        TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "zhTW").execute(connection);
+        // CCG Formats
+        for (MtgFormat format : MtgFormat.values()) {
+            TableOperations.insert(CcgSchema.CCG_FORMAT).value(CcgFormatTable.CCG_ID, "MTG")
+                    .value(CcgFormatTable.CCG_FORMAT_ID, format.name()).execute(connection);
+        }
         logger.info("Inserted default DB info");
     }
 
