@@ -13,4 +13,14 @@ package org.oaktownrpg.jgladiator.framework;
  */
 public interface LookupService extends ServiceType {
 
+    /**
+     * Returns whether this lookup service can be used to gather Ccg information and
+     * used as a source of truth for a given Ccg.
+     * 
+     * @return
+     */
+    default boolean canGather() {
+        return false;
+    };
+
 }

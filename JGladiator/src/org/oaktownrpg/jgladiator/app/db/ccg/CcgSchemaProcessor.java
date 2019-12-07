@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.db.SchemaBuilder;
 import org.oaktownrpg.jgladiator.app.db.TableOperations;
+import org.oaktownrpg.jgladiator.framework.Ccg;
 import org.oaktownrpg.jgladiator.framework.mtg.MtgFormat;
 import org.oaktownrpg.jgladiator.util.BuilderException;
 
@@ -54,7 +55,9 @@ public class CcgSchemaProcessor {
 
     private void insertDefaultData(Connection connection) throws SQLException, BuilderException {
         // CCG
-        TableOperations.insert(CcgSchema.CCG).value(CcgTable.CCG_ID, "MTG").execute(connection);
+        for (Ccg ccg : Ccg.values()) {
+            TableOperations.insert(CcgSchema.CCG).value(CcgTable.CCG_ID, ccg).execute(connection);
+        }
         // Languages
         TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "en").execute(connection);
         TableOperations.insert(CcgSchema.LOCALE).value(LocaleTable.LOCALE_CODE, "es").execute(connection);

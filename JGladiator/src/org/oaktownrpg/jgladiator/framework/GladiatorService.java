@@ -47,6 +47,15 @@ public interface GladiatorService {
     ServiceTypeEnum getType();
 
     /**
+     * Returns the Ccg the service is specific to.
+     * 
+     * @return the Ccg, never null
+     */
+    default Ccg getCcg() {
+        return Ccg.MTG;
+    };
+
+    /**
      * Returns the type-specific functionality of the service
      * 
      * @param <T>

@@ -27,4 +27,9 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
 
     }
 
+    @Override
+    public boolean canGather() {
+        return true;
+    }
+
 }

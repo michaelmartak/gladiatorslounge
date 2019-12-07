@@ -10,4 +10,5 @@ package org.oaktownrpg.jgladiator.framework;
  *
  */
 public interface ServiceType {
+
 }

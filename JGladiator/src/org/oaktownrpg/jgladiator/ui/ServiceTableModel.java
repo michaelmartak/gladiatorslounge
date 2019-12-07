@@ -18,7 +18,9 @@ import org.oaktownrpg.jgladiator.framework.Hub;
  *
  */
 @SuppressWarnings("serial")
-class ServicesTableModel extends AbstractTableModel {
+class ServiceTableModel extends AbstractTableModel {
+
+    private static final int COLUMN_COUNT = 4;
 
     static class ServiceRow {
 
@@ -38,7 +40,7 @@ class ServicesTableModel extends AbstractTableModel {
     /**
      * 
      */
-    ServicesTableModel(Hub hub) {
+    ServiceTableModel(Hub hub) {
         this.hub = hub;
         List<ServiceRow> serviceRows = new LinkedList<>();
         hub.services().visitServices((GladiatorServiceProvider sp, GladiatorService service) -> {
@@ -54,7 +56,7 @@ class ServicesTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return COLUMN_COUNT;
     }
 
     @Override
@@ -66,8 +68,9 @@ class ServicesTableModel extends AbstractTableModel {
         case 1:
             return serviceRow.service.getLocalizedName();
         case 2:
-            return hub.localization()
-                    .string("jgladiator.service.type." + serviceRow.service.getType().name());
+            return hub.localization().string("ccg." + serviceRow.service.getCcg());
+        case 3:
+            return hub.localization().string("jgladiator.service.type." + serviceRow.service.getType().name());
         default:
             return "";
         }
@@ -84,6 +87,9 @@ class ServicesTableModel extends AbstractTableModel {
             columnKey = "jgladiator.service.serviceName";
             break;
         case 2:
+            columnKey = "jgladiator.service.ccg";
+            break;
+        case 3:
             columnKey = "jgladiator.service.type";
             break;
         default:
@@ -91,6 +97,10 @@ class ServicesTableModel extends AbstractTableModel {
         }
 
         return hub.localization().string(columnKey);
+    }
+
+    public GladiatorService getService(int row) {
+        return rows.get(row).service;
     }
 
 }
