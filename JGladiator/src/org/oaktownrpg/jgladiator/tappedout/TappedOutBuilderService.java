@@ -31,7 +31,7 @@ final class TappedOutBuilderService extends AbstractBuilderService<TappedOutServ
 
     @Override
     public void start(Consumer<ServiceFailure> onFailure, Runnable onReady) {
-        httpClient = newHttpClient();
+        httpClient = hub().http().newHttpClient();
         final HttpRequest request = newHttpRequestGET();
         try {
             HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
@@ -49,10 +49,6 @@ final class TappedOutBuilderService extends AbstractBuilderService<TappedOutServ
 
     private HttpRequest newHttpRequestGET() {
         return HttpRequest.newBuilder(TAPPED_OUT_URL).setHeader("User-Agent", "JGladiator").GET().build();
-    }
-
-    private HttpClient newHttpClient() {
-        return HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
     }
 
 }

@@ -43,4 +43,11 @@ public interface Hub {
      */
     Storage storage();
 
+    /**
+     * Returns the HTTP service
+     * 
+     * @return http service, never null
+     */
+    Http http();
+
 }

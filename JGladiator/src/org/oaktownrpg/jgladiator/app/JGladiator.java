@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
+import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.Hub;
 import org.oaktownrpg.jgladiator.framework.HubExecutors;
 import org.oaktownrpg.jgladiator.framework.Localization;
@@ -29,6 +30,7 @@ public final class JGladiator implements Hub {
     private final AppLocalization localization = new AppLocalization();
     private final AppServices services = new AppServices(this);
     private final AppStorage storage = new AppStorage();
+    private final AppHttp http = new AppHttp();
 
     /**
      * @param args
@@ -102,6 +104,11 @@ public final class JGladiator implements Hub {
     @Override
     public Storage storage() {
         return storage;
+    }
+
+    @Override
+    public Http http() {
+        return http;
     }
 
 }
