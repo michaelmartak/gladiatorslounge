@@ -46,11 +46,6 @@ These tasks aren't in any order, so I'm not bothering with numbers.
  
  + News / RSS : very low in priority, but useful.
 
- + Evaluate JCEF (Java Chromium Embedded Framework).  Rather than connect to all of these services (whose endpoints
- may change) it might make more sense to embed Chrome and let Chrome do all the work.  Given what it takes to build
- JCEF, it might not be worth it.  "Why didn't I just build this as a Chrome extension in the first place?"  Well,
- just look at all the crap I'm trying to do here.  We're way too heavyweight for a Chrome extension.
- 
  + The "Killer Use Case".  Once the deck builder UI is looking sweet, pulling in suggestions from EDHREC and
  prices from TCGPlayer would let us build a killer virtual deck, purchase the cards, or make suggestions within
  budgets.
