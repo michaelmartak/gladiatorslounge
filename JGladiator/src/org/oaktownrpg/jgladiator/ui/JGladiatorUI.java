@@ -27,6 +27,7 @@ import org.apache.batik.util.gui.resource.JToolbarButton;
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.Hub;
 import org.oaktownrpg.jgladiator.framework.LookupService;
+import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
 
 /**
@@ -42,6 +43,8 @@ public class JGladiatorUI implements Runnable {
     private JTable serviceTable;
     private Action importAction;
     private ServiceTableModel serviceTableModel;
+    private GladiatorService selectedService;
+    private LookupService lookupService;
 
     public JGladiatorUI(Hub hub) {
         this.hub = hub;
@@ -115,20 +118,33 @@ public class JGladiatorUI implements Runnable {
         if (row < 0) {
             return false;
         }
-        GladiatorService service = serviceTableModel.getService(row);
-        ServiceTypeEnum type = service.getType();
+        selectedService = serviceTableModel.getService(row);
+        ServiceTypeEnum type = selectedService.getType();
         if (type != ServiceTypeEnum.LOOKUP) {
             return false;
         }
-        LookupService lookup = service.asType(LookupService.class);
-        return lookup.canGather();
+        lookupService = selectedService.asType(LookupService.class);
+        return lookupService.canGather();
     }
 
     private Action importAction() {
         RunnableAction action = new RunnableAction();
         action.putValue(Action.NAME, hub.localization().string("ui.action.import"));
         action.setEnabled(false);
+        action.setRunnable(this::gather);
         return action;
+    }
+
+    void gather() {
+        if (lookupService == null || !lookupService.canGather()) {
+            return;
+        }
+        final LookupService ls = lookupService;
+        hub.executors().execute(() -> ls.gather((failure) -> handleFailure(failure), hub.cardLookup()));
+    }
+
+    private void handleFailure(ServiceFailure failure) {
+        Logger.getLogger(getClass().getName()).severe(failure.getLocalizedMessage());
     }
 
     private Container builderTab() {

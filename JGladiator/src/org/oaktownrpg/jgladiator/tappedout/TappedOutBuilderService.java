@@ -40,8 +40,9 @@ final class TappedOutBuilderService extends AbstractBuilderService<TappedOutServ
                 throw new InterruptedException("Status " + statusCode);
             }
             String body = response.body();
+            // FIXME
         } catch (IOException | InterruptedException e) {
-            onFailure.accept(new ServiceFailure(hub().localization().string("failure.http"), e)); // FIXME
+            serviceFailure(onFailure, "failure.http", e);
             return;
         }
         onReady.run();

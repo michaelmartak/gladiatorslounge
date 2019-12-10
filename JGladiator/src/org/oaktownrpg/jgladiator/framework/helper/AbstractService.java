@@ -3,9 +3,12 @@
  */
 package org.oaktownrpg.jgladiator.framework.helper;
 
+import java.util.function.Consumer;
+
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.Hub;
+import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 
 /**
  * @author michaelmartak
@@ -50,6 +53,10 @@ public abstract class AbstractService<P extends GladiatorServiceProvider> implem
 
     protected final Hub hub() {
         return hub;
+    }
+
+    protected void serviceFailure(Consumer<ServiceFailure> onFailure, String key, Exception e) {
+        onFailure.accept(new ServiceFailure(hub().localization().string(key), e));
     }
 
 }

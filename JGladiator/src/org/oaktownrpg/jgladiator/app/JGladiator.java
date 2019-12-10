@@ -15,6 +15,7 @@ import org.oaktownrpg.jgladiator.framework.Localization;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.Services;
 import org.oaktownrpg.jgladiator.framework.Storage;
+import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 import org.oaktownrpg.jgladiator.ui.JGladiatorUI;
 
 /**
@@ -109,6 +110,11 @@ public final class JGladiator implements Hub {
     @Override
     public Http http() {
         return http;
+    }
+
+    @Override
+    public Gatherer cardLookup() {
+        return new CardLookupGatherer(this);
     }
 
 }

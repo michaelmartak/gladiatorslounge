@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oaktownrpg.jgladiator.app.mtg.MtgGameSymbol;
+import org.oaktownrpg.jgladiator.framework.BlobType;
 
 /**
  * @author michaelmartak

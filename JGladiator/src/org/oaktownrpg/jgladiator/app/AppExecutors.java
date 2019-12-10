@@ -72,4 +72,9 @@ public class AppExecutors implements HubExecutors {
         return blobStorageExecutor;
     }
 
+    @Override
+    public void execute(Runnable task) {
+        mainThreadPool.execute(task);
+    }
+
 }

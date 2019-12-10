@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.db.SchemaBuilder;
 import org.oaktownrpg.jgladiator.app.db.TableOperations;
-import org.oaktownrpg.jgladiator.framework.Ccg;
+import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.mtg.MtgFormat;
 import org.oaktownrpg.jgladiator.util.BuilderException;
 

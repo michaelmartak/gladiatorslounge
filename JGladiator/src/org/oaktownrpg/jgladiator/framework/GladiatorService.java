@@ -5,6 +5,8 @@ package org.oaktownrpg.jgladiator.framework;
 
 import java.util.function.Consumer;
 
+import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
+
 /**
  * Base (tag) interface for any service in the Gladiator framework.
  * <p/>

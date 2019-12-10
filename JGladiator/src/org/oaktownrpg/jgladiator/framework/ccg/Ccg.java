@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.oaktownrpg.jgladiator.framework;
+package org.oaktownrpg.jgladiator.framework.ccg;
 
 /**
  * Supported Collectible Card Games.

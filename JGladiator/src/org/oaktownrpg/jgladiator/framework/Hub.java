@@ -3,6 +3,8 @@
  */
 package org.oaktownrpg.jgladiator.framework;
 
+import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
+
 /**
  * Central Hub that all services communicate with.
  * <p/>
@@ -49,5 +51,12 @@ public interface Hub {
      * @return http service, never null
      */
     Http http();
+
+    /**
+     * Returns the gatherer that will persist card data in the local store
+     * 
+     * @return a card lookup gatherer object
+     */
+    Gatherer cardLookup();
 
 }

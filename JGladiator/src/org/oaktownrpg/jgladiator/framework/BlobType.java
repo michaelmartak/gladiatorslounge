@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.oaktownrpg.jgladiator.app.blob;
+package org.oaktownrpg.jgladiator.framework;
 
 /**
  * @author michaelmartak
