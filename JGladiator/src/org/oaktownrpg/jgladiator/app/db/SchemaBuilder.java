@@ -253,7 +253,7 @@ public class SchemaBuilder {
      * @return
      * @throws BuilderException
      */
-    private static <A extends Annotation> A annotation(Class<? extends A> annotationClass, Enum<?> constant)
+    static <A extends Annotation> A annotation(Class<? extends A> annotationClass, Enum<?> constant)
             throws BuilderException {
         try {
             Field field = constant.getClass().getField(constant.name());

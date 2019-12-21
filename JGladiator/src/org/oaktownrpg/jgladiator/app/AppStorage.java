@@ -8,12 +8,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import org.oaktownrpg.jgladiator.app.blob.AppBlob;
 import org.oaktownrpg.jgladiator.app.blob.AppBlobStore;
 import org.oaktownrpg.jgladiator.app.db.AppLocalDatabase;
 import org.oaktownrpg.jgladiator.framework.Storage;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 
 /**
  * Main application storage.
@@ -137,6 +141,15 @@ class AppStorage implements Storage {
             Logger.getLogger(getClass().getName()).severe("Cannot decrypt passphrase " + e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public void storeCardSet(final CardSet cardSet) {
+        final AppBlob blob = new AppBlob(cardSet.getCardSetSymbolType(), cardSet.getCardSetSymbolName(),
+                cardSet.getCardSetSymbolBytes());
+        final UUID blobId = blob.getId();
+        Future<Boolean> blobResult = blobStore.writeBlob(blob);
+        Future<Boolean> dbResult = localDatabase.upsertCardSet(cardSet, blobId);
     }
 
 }

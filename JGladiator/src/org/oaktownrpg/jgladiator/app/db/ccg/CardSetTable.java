@@ -42,7 +42,7 @@ enum CardSetTable {
     /**
      * UUID of the card set symbol, if present and applicable.
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 16)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     SYMBOL_REF,
 
     /**

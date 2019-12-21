@@ -5,6 +5,7 @@ package org.oaktownrpg.jgladiator.app.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.oaktownrpg.jgladiator.util.BuilderException;
 
@@ -33,6 +34,17 @@ public final class TableOperations {
 
     public static InsertPredicate insert(Enum<?> table) throws BuilderException {
         return new InsertPredicate(table);
+    }
+
+    public static UpsertPredicate upsert(Enum<?> table) throws BuilderException {
+        return new UpsertPredicate(table);
+    }
+
+    public static Object predicateValue(Object value) {
+        if (value instanceof UUID || value instanceof Enum<?>) {
+            return value.toString();
+        }
+        return value;
     }
 
 }

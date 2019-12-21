@@ -24,8 +24,7 @@ class CardLookupGatherer implements Gatherer {
 
     @Override
     public void gatherCardSet(CardSet cardSet) {
-        // TODO Auto-generated method stub
-
+        hub.storage().storeCardSet(cardSet);
     }
 
 }

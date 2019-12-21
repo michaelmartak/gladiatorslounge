@@ -6,21 +6,33 @@ package org.oaktownrpg.jgladiator.scryfall;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.function.Consumer;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.oaktownrpg.jgladiator.framework.BlobType;
 import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSetBuilder;
+import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 import org.oaktownrpg.jgladiator.framework.helper.AbstractLookupService;
+
+import com.sun.istack.logging.Logger;
 
 /**
  * @author michaelmartak
  *
  */
 class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvider> {
+
+    static class ScryfallSetData {
+
+    }
 
     private static final URI SCRYFALL_URI = URI.create("https://scryfall.com/sets");
 
@@ -74,15 +86,51 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         Elements rows = tbody.getElementsByTag("tr");
         for (int i = 0; i < rows.size(); i++) {
             Element row = rows.get(i);
-            visitSet(gatherer, row);
+            visitSet(gatherer, document, row);
         }
     }
 
-    private void visitSet(final Gatherer gatherer, Element row) {
+    private void visitSet(final Gatherer gatherer, final Document document, final Element row) {
         final Elements cells = row.getElementsByTag("td");
-        for (int i = 0; i < cells.size(); i++) {
+        final Element name = cells.get(0);
+        final Element cardCount = cells.get(1);
+        final Element releaseDate = cells.get(2);
+        final Element languages = cells.get(3);
+        CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).symbolType(BlobType.SVG).id(extractId(name))
+                .symbolBytes(extractCardSymbol(document, name)).symbolName(extractCardSymbolName(document, name))
+                .releaseDate(extractReleaseDate(releaseDate));
+        gatherer.gatherCardSet(builder.build());
+    }
 
+    private String extractCardSymbolName(Document document, Element name) {
+        final Element use = name.getElementsByTag("use").get(0);
+        final String xlink = use.attr("xlink:href");
+        return xlink.substring(1);
+    }
+
+    private Date extractReleaseDate(Element releaseDate) {
+        final Element anchor = releaseDate.getElementsByTag("a").get(0);
+        final String dateString = anchor.ownText();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(dateString);
+            return date;
+        } catch (ParseException e) {
+            Logger.getLogger(getClass()).warning(e.getMessage());
+            return null;
         }
+    }
+
+    private byte[] extractCardSymbol(Document document, Element name) {
+        final Element use = name.getElementsByTag("use").get(0);
+        final String xlink = use.attr("xlink:href");
+        final String svg = document.getElementById(xlink.substring(1)).outerHtml();
+        return svg.getBytes();
+    }
+
+    private String extractId(Element name) {
+        final Element anchor = name.getElementsByTag("a").get(0);
+        return anchor.ownText();
     }
 
 }

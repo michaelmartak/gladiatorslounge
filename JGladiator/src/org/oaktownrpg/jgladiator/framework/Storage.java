@@ -5,6 +5,8 @@ package org.oaktownrpg.jgladiator.framework;
 
 import java.util.function.Supplier;
 
+import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
+
 /**
  * Application local storage.
  * 
@@ -34,5 +36,12 @@ public interface Storage {
      *         itself, for added reminder and caution.
      */
     Supplier<String> fetchCredentials(String key);
+
+    /**
+     * Insert or update the representation of the given CardSet
+     * 
+     * @param cardSet
+     */
+    void storeCardSet(CardSet cardSet);
 
 }

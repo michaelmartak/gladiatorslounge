@@ -20,13 +20,17 @@ public final class CardSet {
     private Date releaseDate;
     private byte[] cardSetSymbolBytes;
     private BlobType cardSetSymbolType;
+    private String cardSetSymbolName;
     private String cardSetInformation;
 
+    CardSet() {
+    }
+    
     public Ccg getCcg() {
         return ccg;
     }
 
-    public void setCcg(Ccg ccg) {
+    void setCcg(Ccg ccg) {
         this.ccg = ccg;
     }
 
@@ -34,7 +38,7 @@ public final class CardSet {
         return id;
     }
 
-    public void setId(String id) {
+    void setId(String id) {
         this.id = id;
     }
 
@@ -42,7 +46,7 @@ public final class CardSet {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -50,7 +54,7 @@ public final class CardSet {
         return cardSetSymbolBytes;
     }
 
-    public void setCardSetSymbolBytes(byte[] cardSetSymbolBytes) {
+    void setCardSetSymbolBytes(byte[] cardSetSymbolBytes) {
         this.cardSetSymbolBytes = cardSetSymbolBytes;
     }
 
@@ -58,16 +62,30 @@ public final class CardSet {
         return cardSetSymbolType;
     }
 
-    public void setCardSetSymbolType(BlobType cardSetSymbolType) {
+    void setCardSetSymbolType(BlobType cardSetSymbolType) {
         this.cardSetSymbolType = cardSetSymbolType;
+    }
+    
+    public String getCardSetSymbolName() {
+        return cardSetSymbolName;
+    }
+
+    void setCardSetSymbolName(String cardSetSymbolName) {
+        this.cardSetSymbolName = cardSetSymbolName;
     }
 
     public String getCardSetInformation() {
         return cardSetInformation;
     }
 
-    public void setSetInformation(String cardSetInformation) {
+    void setSetInformation(String cardSetInformation) {
         this.cardSetInformation = cardSetInformation;
+    }
+
+    @Override
+    public String toString() {
+        return "CardSet [ccg=" + ccg + ", id=" + id + ", releaseDate=" + releaseDate + ", cardSetSymbolType="
+                + cardSetSymbolType + "]";
     }
 
 }

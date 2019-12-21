@@ -75,14 +75,14 @@ enum CardPrintTable {
     /**
      * UUID of the front art in the BLOB storage, if present and applicable.
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 16)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     FRONT_ART_REF,
 
     /**
      * UUID of the back art in the BLOB storage, if the card is two-sided and is
      * present and applicable.
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 16)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     BACK_ART_REF,
 
     /**

@@ -3,15 +3,19 @@
  */
 package org.oaktownrpg.jgladiator.app.db;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.AppExecutors;
 import org.oaktownrpg.jgladiator.app.db.ccg.CcgSchemaProcessor;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 
 /**
  * Local database storage
@@ -49,22 +53,42 @@ public class AppLocalDatabase {
      */
     void initializeConnection() {
         try {
-            // Documentation for Apache Derby recommends to launch indirectly, using
-            // reflection.
-            Class.forName(EMBEDDED_DRIVER_CLASS).getDeclaredConstructor().newInstance();
+            connection = newConnection();
         } catch (Exception e) {
-            logger.severe("Cannot load Apache Derby embedded driver " + e.getMessage());
-            return;
-        }
-        Properties dbProperties = new Properties();
-        try {
-            connection = DriverManager.getConnection(CONNECTION_URL, dbProperties);
-        } catch (SQLException e) {
             logger.severe("Cannot start database connection " + e.getMessage());
             return;
         }
         logger.info("Database connection successful.");
-        ccgSchema.ensureSchema(connection);
+        ccgSchema.initializeConnection(connection);
+        ccgSchema.ensureSchema();
+    }
+
+    /**
+     * Create a new connection
+     * 
+     * @return
+     * @throws SQLException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws ClassNotFoundException
+     */
+    public static Connection newConnection()
+            throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+        // Documentation for Apache Derby recommends to launch indirectly, using
+        // reflection.
+        Class.forName(EMBEDDED_DRIVER_CLASS).getDeclaredConstructor().newInstance();
+        Properties dbProperties = new Properties();
+        Connection connection = DriverManager.getConnection(CONNECTION_URL, dbProperties);
+        return connection;
+    }
+
+    public Future<Boolean> upsertCardSet(CardSet cardSet, UUID symbolId) {
+        return databaseExecutor.submit(() -> ccgSchema.upsertCardSet(cardSet, symbolId));
     }
 
 }

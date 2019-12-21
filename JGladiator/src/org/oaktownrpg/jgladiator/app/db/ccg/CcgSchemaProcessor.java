@@ -5,10 +5,12 @@ package org.oaktownrpg.jgladiator.app.db.ccg;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.db.SchemaBuilder;
 import org.oaktownrpg.jgladiator.app.db.TableOperations;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.mtg.MtgFormat;
 import org.oaktownrpg.jgladiator.util.BuilderException;
@@ -22,6 +24,7 @@ import org.oaktownrpg.jgladiator.util.BuilderException;
 public class CcgSchemaProcessor {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
+    private Connection connection;
 
     /**
      * 
@@ -29,31 +32,30 @@ public class CcgSchemaProcessor {
     public CcgSchemaProcessor() {
     }
 
+    public void initializeConnection(Connection connection) {
+        this.connection = connection;
+    }
+
     /**
      * Check the status of the DB schema and create tables, if necessary
      */
-    public void ensureSchema(Connection connection) {
+    public void ensureSchema() {
         String fault = "Could not check existence of table ";
         try {
             if (TableOperations.tableExists(connection, CcgSchema.CCG)) {
-                // FIXME should just return. DROPPING tables now
-                final CcgSchema[] tables = CcgSchema.values();
-                for (int i = tables.length - 1; i >= 0; i--) {
-                    TableOperations.dropTableIfExists(connection, tables[i]);
-                }
                 // Table already exists
-                // return;
+                return;
             }
             fault = "Could not create schema ";
-            createSchema(connection);
+            createSchema();
             fault = "Could not insert default data ";
-            insertDefaultData(connection);
+            insertDefaultData();
         } catch (SQLException | BuilderException e) {
             logger.severe(fault + e.getMessage());
         }
     }
 
-    private void insertDefaultData(Connection connection) throws SQLException, BuilderException {
+    private void insertDefaultData() throws SQLException, BuilderException {
         // CCG
         for (Ccg ccg : Ccg.values()) {
             TableOperations.insert(CcgSchema.CCG).value(CcgTable.CCG_ID, ccg).execute(connection);
@@ -80,9 +82,23 @@ public class CcgSchemaProcessor {
         logger.info("Inserted default DB info");
     }
 
-    private void createSchema(Connection connection) throws SQLException, BuilderException {
+    private void createSchema() throws SQLException, BuilderException {
         new SchemaBuilder(CcgSchema.class).build(connection);
         logger.info("Created DB schema");
+    }
+
+    public boolean upsertCardSet(CardSet cardSet, UUID symbolId) {
+        try {
+            TableOperations.upsert(CcgSchema.CARD_SET).value(CardSetTable.CARD_SET_ID, cardSet.getId())
+                    .value(CardSetTable.CCG_ID, cardSet.getCcg())
+                    .value(CardSetTable.RELEASE_DATE, cardSet.getReleaseDate())
+                    .value(CardSetTable.INFO, cardSet.getCardSetInformation()).value(CardSetTable.SYMBOL_REF, symbolId)
+                    .execute(connection);
+        } catch (BuilderException | SQLException e) {
+            logger.severe(e.getMessage());
+            return false;
+        }
+        return true;
     }
 
 }

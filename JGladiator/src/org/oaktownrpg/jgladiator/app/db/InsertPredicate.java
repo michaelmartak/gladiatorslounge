@@ -4,7 +4,10 @@
 package org.oaktownrpg.jgladiator.app.db;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.oaktownrpg.jgladiator.util.BuilderException;
 
@@ -16,9 +19,9 @@ import org.oaktownrpg.jgladiator.util.BuilderException;
  */
 public class InsertPredicate {
 
-    private final StringBuilder sql = new StringBuilder();
-    private final StringBuilder columns = new StringBuilder();
-    private final StringBuilder values = new StringBuilder();
+    private final String tableName;
+    private final List<String> columns = new ArrayList<>();
+    private final List<Object> values = new ArrayList<>();
 
     /**
      * Create a new predicate for INSERT
@@ -30,9 +33,7 @@ public class InsertPredicate {
     InsertPredicate(Enum<?> table) throws BuilderException {
         assert table != null;
 
-        sql.append("INSERT INTO ");
-        sql.append(SchemaBuilder.sqlTableName(table));
-        sql.append(" ");
+        tableName = SchemaBuilder.sqlTableName(table);
     }
 
     /**
@@ -44,16 +45,9 @@ public class InsertPredicate {
      * @throws BuilderException
      */
     public InsertPredicate value(Enum<?> column, Object value) throws BuilderException {
-        if (columns.length() != 0) {
-            columns.append(", ");
-        }
-        columns.append(SchemaBuilder.sqlColumnName(column));
-        if (values.length() != 0) {
-            values.append(",");
-        }
-        values.append(" '");
-        values.append(value);
-        values.append("' ");
+        value = TableOperations.predicateValue(value);
+        columns.add(SchemaBuilder.sqlColumnName(column));
+        values.add(value);
         return this;
     }
 
@@ -61,15 +55,28 @@ public class InsertPredicate {
      * Execute the INSERT statement
      * 
      * @param connection
+     * @return 
      * @throws SQLException
      */
-    public void execute(Connection connection) throws SQLException {
-        sql.append("( ");
-        sql.append(columns);
+    public boolean execute(Connection connection) throws SQLException {
+        final StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ");
+        sql.append(tableName);
+        sql.append(" ( ");
+        for (int i = 0; i < columns.size(); i++) {
+            if (i > 0) {
+                sql.append(", ");
+            }
+            sql.append(columns.get(i));
+        }
         sql.append(" ) VALUES (");
-        sql.append(values);
-        sql.append(")");
-        Sql.executeUpdate(connection, sql.toString());
+        sql.append("?, ".repeat(values.size() - 1));
+        sql.append("? )");
+        PreparedStatement stmt = connection.prepareStatement(sql.toString());
+        for (int i = 0; i < values.size(); i++) {
+            stmt.setObject(i + 1, values.get(i));
+        }
+        return stmt.execute();
     }
 
 }
