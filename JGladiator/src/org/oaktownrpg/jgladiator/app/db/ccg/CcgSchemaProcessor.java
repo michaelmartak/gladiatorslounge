@@ -94,6 +94,7 @@ public class CcgSchemaProcessor {
                     .value(CardSetTable.RELEASE_DATE, cardSet.getReleaseDate())
                     .value(CardSetTable.INFO, cardSet.getCardSetInformation()).value(CardSetTable.SYMBOL_REF, symbolId)
                     .execute(connection);
+            logger.info("UPSERTED Card Set '" + cardSet.getId() + "'");
         } catch (BuilderException | SQLException e) {
             logger.severe(e.getMessage());
             return false;
