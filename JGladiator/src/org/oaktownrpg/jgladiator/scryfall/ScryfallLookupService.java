@@ -45,8 +45,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
 
     @Override
     public void start(Consumer<ServiceFailure> onFailure, Runnable onReady) {
-        // TODO Auto-generated method stub
-
+        onReady.run();
     }
 
     @Override
@@ -84,22 +83,35 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         Element tbody = tbodys.get(0);
         // Fetch the table rows
         Elements rows = tbody.getElementsByTag("tr");
+        String parentId = null;
         for (int i = 0; i < rows.size(); i++) {
             Element row = rows.get(i);
-            visitSet(gatherer, document, row);
+            parentId = visitSet(gatherer, document, row, parentId);
         }
     }
 
-    private void visitSet(final Gatherer gatherer, final Document document, final Element row) {
+    private String visitSet(final Gatherer gatherer, final Document document, final Element row, final String parentId) {
         final Elements cells = row.getElementsByTag("td");
         final Element name = cells.get(0);
         final Element cardCount = cells.get(1);
         final Element releaseDate = cells.get(2);
         final Element languages = cells.get(3);
-        CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).symbolType(BlobType.SVG).id(extractId(name))
+        final String id = extractId(name);
+        final boolean isIndent = isIndent(name);
+        final String parentCardSet = isIndent ? parentId : null;
+        CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).symbolType(BlobType.SVG).id(id)
                 .symbolBytes(extractCardSymbol(document, name)).symbolName(extractCardSymbolName(document, name))
-                .releaseDate(extractReleaseDate(releaseDate));
+                .releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet);
         gatherer.gatherCardSet(builder.build());
+        if (isIndent) {
+            return parentId;
+        }
+        return id;
+    }
+
+    private boolean isIndent(Element name) {
+        String tdClass = name.attr("class");
+        return tdClass.contains("indent");
     }
 
     private String extractCardSymbolName(Document document, Element name) {
@@ -124,7 +136,11 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
     private byte[] extractCardSymbol(Document document, Element name) {
         final Element use = name.getElementsByTag("use").get(0);
         final String xlink = use.attr("xlink:href");
-        final String svg = document.getElementById(xlink.substring(1)).outerHtml();
+        final Element svgElement = document.getElementById(xlink.substring(1));
+        String svg = svgElement.outerHtml();
+        if (svg.startsWith("<symbol") && svg.endsWith("symbol>")) {
+            svg = "<svg" + svg.substring(7, svg.length() - 7) + "svg>";
+        }
         return svg.getBytes();
     }
 

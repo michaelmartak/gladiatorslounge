@@ -53,6 +53,11 @@ public class CardSetBuilder {
         return this;
     }
 
+    public CardSetBuilder parentCardSet(String id) {
+        cardSet.setParentCardSet(id);
+        return this;
+    }
+
     public CardSet build() {
         return cardSet;
     }

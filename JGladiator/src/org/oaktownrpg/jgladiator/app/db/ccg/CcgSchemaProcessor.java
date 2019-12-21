@@ -16,7 +16,9 @@ import org.oaktownrpg.jgladiator.framework.mtg.MtgFormat;
 import org.oaktownrpg.jgladiator.util.BuilderException;
 
 /**
- * Schema processor for CCG games
+ * Schema processor for CCG database objects.
+ * <p/>
+ * Handles all DB storage of CCG items.
  * 
  * @author michaelmartak
  *
@@ -93,6 +95,7 @@ public class CcgSchemaProcessor {
                     .value(CardSetTable.CCG_ID, cardSet.getCcg())
                     .value(CardSetTable.RELEASE_DATE, cardSet.getReleaseDate())
                     .value(CardSetTable.INFO, cardSet.getCardSetInformation()).value(CardSetTable.SYMBOL_REF, symbolId)
+                    .value(CardSetTable.PARENT_SET_ID, cardSet.getParentCardSet())
                     .execute(connection);
             logger.info("UPSERTED Card Set '" + cardSet.getId() + "'");
         } catch (BuilderException | SQLException e) {

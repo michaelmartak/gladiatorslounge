@@ -52,9 +52,10 @@ enum CardSetTable {
     INFO,
 
     /**
-     * Last update of this card set information in the database
+     * If this is a subset of a larger set, the ID of the parent set.
      */
-    @DatabaseColumn(type = DataType.TIMESTAMP)
-    LAST_UPDATE
+    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    @ForeignKey(table = "CARD_SET", fields = { "CCG_ID", "CARD_SET_ID" })
+    PARENT_SET_ID,
 
 }

@@ -22,6 +22,7 @@ public final class CardSet {
     private BlobType cardSetSymbolType;
     private String cardSetSymbolName;
     private String cardSetInformation;
+    private String parentCardSet;
 
     CardSet() {
     }
@@ -72,6 +73,14 @@ public final class CardSet {
 
     void setCardSetSymbolName(String cardSetSymbolName) {
         this.cardSetSymbolName = cardSetSymbolName;
+    }
+
+    public String getParentCardSet() {
+        return parentCardSet;
+    }
+    
+    void setParentCardSet(String parentCardSet) {
+        this.parentCardSet = parentCardSet;
     }
 
     public String getCardSetInformation() {
