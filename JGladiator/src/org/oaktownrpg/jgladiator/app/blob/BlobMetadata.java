@@ -3,6 +3,7 @@
  */
 package org.oaktownrpg.jgladiator.app.blob;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -23,13 +24,15 @@ import com.fasterxml.uuid.Generators;
  *
  */
 @XmlRootElement
-public class BlobMetadata {
+public final class BlobMetadata {
 
     private UUID id;
     private BlobType blobType;
     private String fileName;
     private String altText;
     private long size;
+    private int hash;
+    private String source;
 
     /**
      * Generates a UUID that is guaranteed to be unique for this machine.
@@ -49,19 +52,22 @@ public class BlobMetadata {
     /**
      * 
      */
-    public BlobMetadata(BlobType blobType, String fileName, String altText, long size) {
-        this(generateUUID(), blobType, fileName, altText, size);
+    BlobMetadata(BlobType blobType, String fileName, String altText, long size, int hash, String source) {
+        this(generateUUID(), blobType, fileName, altText, size, hash, source);
     }
 
     /**
      * 
      */
-    public BlobMetadata(UUID id, BlobType blobType, String fileName, String altText, long size) {
+    public BlobMetadata(UUID id, BlobType blobType, String fileName, String altText, long size, int hash,
+            String source) {
         this.id = id;
         this.blobType = blobType;
         this.fileName = fileName;
         this.altText = altText;
         this.size = size;
+        this.hash = hash;
+        this.source = source;
     }
 
     @XmlAttribute
@@ -114,16 +120,37 @@ public class BlobMetadata {
         this.size = size;
     }
 
+    /**
+     * Hash value
+     * 
+     * @return
+     */
+    @XmlElement
+    public int getHash() {
+        return hash;
+    }
+
+    public void setHash(int hash) {
+        this.hash = hash;
+    }
+
+    /**
+     * Origin source of the BLOB
+     * 
+     * @return
+     */
+    @XmlElement
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((altText == null) ? 0 : altText.hashCode());
-        result = prime * result + ((blobType == null) ? 0 : blobType.hashCode());
-        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + (int) (size ^ (size >>> 32));
-        return result;
+        return Objects.hash(altText, blobType, fileName, hash, id, size, source);
     }
 
     @Override
@@ -135,26 +162,9 @@ public class BlobMetadata {
         if (getClass() != obj.getClass())
             return false;
         BlobMetadata other = (BlobMetadata) obj;
-        if (altText == null) {
-            if (other.altText != null)
-                return false;
-        } else if (!altText.equals(other.altText))
-            return false;
-        if (blobType != other.blobType)
-            return false;
-        if (fileName == null) {
-            if (other.fileName != null)
-                return false;
-        } else if (!fileName.equals(other.fileName))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (size != other.size)
-            return false;
-        return true;
+        return Objects.equals(altText, other.altText) && blobType == other.blobType
+                && Objects.equals(fileName, other.fileName) && hash == other.hash && Objects.equals(id, other.id)
+                && size == other.size && Objects.equals(source, other.source);
     }
 
 }

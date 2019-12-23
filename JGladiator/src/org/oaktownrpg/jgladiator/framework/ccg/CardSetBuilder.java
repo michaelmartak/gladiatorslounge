@@ -5,8 +5,6 @@ package org.oaktownrpg.jgladiator.framework.ccg;
 
 import java.util.Date;
 
-import org.oaktownrpg.jgladiator.framework.BlobType;
-
 /**
  * Builds a card set
  * 
@@ -23,13 +21,12 @@ public class CardSetBuilder {
     public CardSetBuilder() {
     }
 
-    public CardSetBuilder ccg(Ccg ccg) {
-        cardSet.setCcg(ccg);
-        return this;
+    void setSymbol(CardSetSymbol symbol) {
+        cardSet.setSymbol(symbol);
     }
 
-    public CardSetBuilder symbolType(BlobType type) {
-        cardSet.setCardSetSymbolType(type);
+    public CardSetBuilder ccg(Ccg ccg) {
+        cardSet.setCcg(ccg);
         return this;
     }
 
@@ -38,24 +35,18 @@ public class CardSetBuilder {
         return this;
     }
 
-    public CardSetBuilder symbolBytes(byte[] bytes) {
-        cardSet.setCardSetSymbolBytes(bytes);
-        return this;
-    }
-
     public CardSetBuilder releaseDate(Date date) {
         cardSet.setReleaseDate(date);
-        return this;
-    }
-
-    public CardSetBuilder symbolName(String name) {
-        cardSet.setCardSetSymbolName(name);
         return this;
     }
 
     public CardSetBuilder parentCardSet(String id) {
         cardSet.setParentCardSet(id);
         return this;
+    }
+    
+    public CardSetSymbolBuilder symbol() {
+        return new CardSetSymbolBuilder(this);
     }
 
     public CardSet build() {

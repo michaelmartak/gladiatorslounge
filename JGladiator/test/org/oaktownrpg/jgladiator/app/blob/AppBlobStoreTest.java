@@ -41,8 +41,10 @@ public class AppBlobStoreTest {
         AppBlobStore store = new AppBlobStore();
         store.initialize(appDir, Executors.newSingleThreadExecutor());
 
-        byte[] bytes = MtgGameSymbol.BLACK.getSvg().getBytes();
-        BlobMetadata metadata = new BlobMetadata(BlobType.SVG, "black_mana.svg", "Test File", bytes.length);
+        String svg = MtgGameSymbol.BLACK.getSvg();
+        byte[] bytes = svg.getBytes();
+        BlobMetadata metadata = new BlobMetadata(BlobType.SVG, "black_mana.svg", "Test File", bytes.length,
+                svg.hashCode(), "JGladiator Test");
         AppBlob blob = new AppBlob(metadata, bytes);
         UUID id = blob.getId();
 

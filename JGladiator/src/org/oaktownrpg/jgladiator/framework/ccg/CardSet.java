@@ -5,8 +5,6 @@ package org.oaktownrpg.jgladiator.framework.ccg;
 
 import java.util.Date;
 
-import org.oaktownrpg.jgladiator.framework.BlobType;
-
 /**
  * Identifying set of cards
  * 
@@ -18,15 +16,13 @@ public final class CardSet {
     private Ccg ccg;
     private String id;
     private Date releaseDate;
-    private byte[] cardSetSymbolBytes;
-    private BlobType cardSetSymbolType;
-    private String cardSetSymbolName;
-    private String cardSetInformation;
+    private String information;
     private String parentCardSet;
+    private CardSetSymbol symbol;
 
     CardSet() {
     }
-    
+
     public Ccg getCcg() {
         return ccg;
     }
@@ -51,50 +47,33 @@ public final class CardSet {
         this.releaseDate = releaseDate;
     }
 
-    public byte[] getCardSetSymbolBytes() {
-        return cardSetSymbolBytes;
-    }
-
-    void setCardSetSymbolBytes(byte[] cardSetSymbolBytes) {
-        this.cardSetSymbolBytes = cardSetSymbolBytes;
-    }
-
-    public BlobType getCardSetSymbolType() {
-        return cardSetSymbolType;
-    }
-
-    void setCardSetSymbolType(BlobType cardSetSymbolType) {
-        this.cardSetSymbolType = cardSetSymbolType;
-    }
-    
-    public String getCardSetSymbolName() {
-        return cardSetSymbolName;
-    }
-
-    void setCardSetSymbolName(String cardSetSymbolName) {
-        this.cardSetSymbolName = cardSetSymbolName;
-    }
-
     public String getParentCardSet() {
         return parentCardSet;
     }
-    
+
     void setParentCardSet(String parentCardSet) {
         this.parentCardSet = parentCardSet;
     }
 
-    public String getCardSetInformation() {
-        return cardSetInformation;
+    public String getInformation() {
+        return information;
     }
 
-    void setSetInformation(String cardSetInformation) {
-        this.cardSetInformation = cardSetInformation;
+    void setInformation(String information) {
+        this.information = information;
+    }
+
+    public CardSetSymbol getSymbol() {
+        return symbol;
+    }
+
+    void setSymbol(CardSetSymbol symbol) {
+        this.symbol = symbol;
     }
 
     @Override
     public String toString() {
-        return "CardSet [ccg=" + ccg + ", id=" + id + ", releaseDate=" + releaseDate + ", cardSetSymbolType="
-                + cardSetSymbolType + "]";
+        return "CardSet [ccg=" + ccg + ", id=" + id + ", releaseDate=" + releaseDate + ", symbol=" + symbol + "]";
     }
 
 }

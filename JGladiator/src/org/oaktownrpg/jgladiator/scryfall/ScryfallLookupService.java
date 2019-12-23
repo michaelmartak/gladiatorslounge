@@ -90,7 +90,8 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         }
     }
 
-    private String visitSet(final Gatherer gatherer, final Document document, final Element row, final String parentId) {
+    private String visitSet(final Gatherer gatherer, final Document document, final Element row,
+            final String parentId) {
         final Elements cells = row.getElementsByTag("td");
         final Element name = cells.get(0);
         final Element cardCount = cells.get(1);
@@ -99,9 +100,10 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final String id = extractId(name);
         final boolean isIndent = isIndent(name);
         final String parentCardSet = isIndent ? parentId : null;
-        CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).symbolType(BlobType.SVG).id(id)
-                .symbolBytes(extractCardSymbol(document, name)).symbolName(extractCardSymbolName(document, name))
-                .releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet);
+
+        final CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).id(id).symbol().type(BlobType.SVG)
+                .bytes(extractCardSymbol(document, name)).name(extractCardSymbolName(document, name)).source("scryfall")
+                .cardSet().releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet);
         gatherer.gatherCardSet(builder.build());
         if (isIndent) {
             return parentId;

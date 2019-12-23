@@ -15,9 +15,11 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.blob.AppBlob;
 import org.oaktownrpg.jgladiator.app.blob.AppBlobStore;
+import org.oaktownrpg.jgladiator.app.blob.BlobMetadata;
 import org.oaktownrpg.jgladiator.app.db.AppLocalDatabase;
 import org.oaktownrpg.jgladiator.framework.Storage;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSetSymbol;
 
 /**
  * Main application storage.
@@ -145,11 +147,29 @@ class AppStorage implements Storage {
 
     @Override
     public void storeCardSet(final CardSet cardSet) {
-        final AppBlob blob = new AppBlob(cardSet.getCardSetSymbolType(), cardSet.getCardSetSymbolName(),
-                cardSet.getCardSetSymbolBytes());
-        final UUID blobId = blob.getId();
-        Future<Boolean> blobResult = blobStore.writeBlob(blob);
-        Future<Boolean> dbResult = localDatabase.upsertCardSet(cardSet, blobId);
+        final CardSetSymbol symbol = cardSet.getSymbol();
+        try {
+            final Future<UUID> blobId = blobStore.writeIdempotent(blob(symbol));
+            final Future<Boolean> dbResult = localDatabase.upsertCardSet(cardSet, blobId.get());
+            if (!dbResult.get()) {
+                Logger.getLogger(getClass().getName()).severe("Card set result store FALSE");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).severe("Cannot store card set " + e.getMessage());
+        }
+    }
+
+    private AppBlob blob(CardSetSymbol symbol) {
+        final byte[] bytes = symbol.getBytes();
+        BlobMetadata metadata = new BlobMetadata();
+        metadata.setAltText(symbol.getAltText());
+        metadata.setBlobType(symbol.getType());
+        metadata.setFileName(symbol.getName());
+        metadata.setHash(symbol.getName().hashCode());
+        metadata.setSize(bytes.length);
+        metadata.setSource(symbol.getSource());
+        AppBlob blob = new AppBlob(metadata, bytes);
+        return blob;
     }
 
 }
