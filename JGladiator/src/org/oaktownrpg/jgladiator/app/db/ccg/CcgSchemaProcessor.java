@@ -96,6 +96,7 @@ public class CcgSchemaProcessor {
             TableOperations.upsert(CcgSchema.CARD_SET).value(CardSetTable.CARD_SET_ID, cardSet.getId())
                     .value(CardSetTable.CCG_ID, cardSet.getCcg())
                     .value(CardSetTable.RELEASE_DATE, cardSet.getReleaseDate())
+                    .value(CardSetTable.EXPANSION_CODE, cardSet.getExpansionCode())
                     .value(CardSetTable.INFO, cardSet.getInformation()).value(CardSetTable.SYMBOL_REF, symbolId)
                     .value(CardSetTable.PARENT_SET_ID, cardSet.getParentCardSet()).execute(connection);
             logger.info("UPSERTED Card Set '" + cardSet.getId() + "'");

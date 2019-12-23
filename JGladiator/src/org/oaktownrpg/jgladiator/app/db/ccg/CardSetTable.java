@@ -32,6 +32,12 @@ enum CardSetTable {
     @NotNull
     @PrimaryKey
     CARD_SET_ID,
+    
+    /**
+     * Expansion code
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 8)
+    EXPANSION_CODE,
 
     /**
      * Date the card set was released, if applicable.

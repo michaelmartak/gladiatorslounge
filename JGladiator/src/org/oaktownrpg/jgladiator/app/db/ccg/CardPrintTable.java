@@ -67,6 +67,30 @@ enum CardPrintTable {
     SET_NUMBER,
 
     /**
+     * Localized title of the card. In English, this is the same as the Card ID.
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    TITLE,
+
+    /**
+     * Localized card types and/or subtypes, if different from the Card Identity.
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    TYPE,
+
+    /**
+     * Localized Oracle Text, if different from the Card Identity.
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
+    ORACLE_TEXT,
+
+    /**
+     * The localized flavor text for a card, if different from the Card Identity.
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
+    FLAVOR_TEXT,
+
+    /**
      * The rarity of the card within the set, if applicable.
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 10)
@@ -109,15 +133,9 @@ enum CardPrintTable {
      * For a particular card printing in a set, we store which material variants are
      * available (e.g., Foil only, Nonfoil only, etc.).
      * 
-     * @see org.oaktownrpg.jgladiator.app.ccg.FoilAvailability
+     * @see org.oaktownrpg.jgladiator.framework.ccg.FoilAvailability
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 10)
     MATERIAL_VARIANTS,
-
-    /**
-     * Last update of this card printing in the database
-     */
-    @DatabaseColumn(type = DataType.TIMESTAMP)
-    LAST_UPDATE
 
 }

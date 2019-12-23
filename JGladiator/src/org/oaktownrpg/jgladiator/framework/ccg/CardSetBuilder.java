@@ -43,6 +43,11 @@ public class CardSetBuilder {
         return this;
     }
 
+    public CardSetBuilder expansionCode(String expansionCode) {
+        cardSet.setExpansionCode(expansionCode);
+        return this;
+    }
+
     public CardSetBuilder parentCardSet(String id) {
         cardSet.setParentCardSet(id);
         return this;
@@ -56,7 +61,7 @@ public class CardSetBuilder {
     public CardSetSymbolBuilder symbol() {
         return new CardSetSymbolBuilder(this);
     }
-
+    
     public CardSet build() {
         return cardSet;
     }

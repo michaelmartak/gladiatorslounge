@@ -80,8 +80,10 @@ public class UpsertPredicate {
             stmtParams.add(pkValues.get(i));
         }
         if (pkColumns.size() == columns.size() && nonPkColumns.size() == 0) {
-            // No-op
+            // No-op. If all columns are the primary key, then we are only inserting new items.
+            // Existing matches are already in the database.
         } else {
+            // Primary key matches, do UPDATE
             sql.append(" WHEN MATCHED THEN");
             sql.append(" UPDATE SET ");
             for (int i = 0; i < nonPkColumns.size(); i++) {
@@ -94,6 +96,7 @@ public class UpsertPredicate {
                 stmtParams.add(nonPkValues.get(i));
             }
         }
+        // Primary key does not match, do INSERT
         sql.append(" WHEN NOT MATCHED THEN");
         sql.append(" INSERT (");
         for (int i = 0; i < columns.size(); i++) {

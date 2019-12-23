@@ -107,12 +107,22 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).id(id).symbol().type(BlobType.SVG)
                 .bytes(extractCardSymbol(main, name)).name(extractCardSymbolName(name)).source("scryfall")
                 .cardSet().releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet)
-                .languages(extractLanguages(languages));
+                .languages(extractLanguages(languages)).expansionCode(extractExpansionCode(name));
         gatherer.gatherCardSet(builder.build());
+        
         if (isIndent) {
             return parentId;
         }
         return id;
+    }
+
+    private String extractExpansionCode(Element name) {
+        final Elements smalls = name.getElementsByTag("small");
+        if (smalls.isEmpty()) {
+            return null;
+        }
+        final Element small = smalls.get(0);
+        return small.ownText();
     }
 
     private Set<String> extractLanguages(Element languages) {
@@ -122,7 +132,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
             Set<String> classNames = box.classNames();
             if (!classNames.contains("disabled")) {
                 String text = box.ownText();
-                // Chinese is expressed in actual Chinese characters
+                // Chinese locale is expressed / displayed in actual Chinese characters
                 if ("汉语".equals(text)) {
                     text = "zhCN";
                 } else if ("漢語".equals(text)) {
@@ -163,6 +173,8 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final String xlink = use.attr("xlink:href");
         final Element svgElement = main.getElementById(xlink.substring(1));
         String svg = svgElement.outerHtml();
+        // Scryfall uses one big inline SVG with a bunch of <symbol> elements in it.
+        // We save them out as individual svg files.
         if (svg.startsWith("<symbol") && svg.endsWith("symbol>")) {
             svg = "<svg" + svg.substring(7, svg.length() - 7) + "svg>";
         }
