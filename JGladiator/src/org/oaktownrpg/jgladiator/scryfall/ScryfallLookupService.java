@@ -9,6 +9,8 @@ import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jsoup.nodes.Document;
@@ -72,6 +74,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         }
         final String body = response.body();
         final Document document = http.parse(body);
+        final Element main = document.getElementById("main");
         // js-checklist is the table with the list of sets.
         Element checklist = document.getElementById("js-checklist");
         // Get the table body (tbody)
@@ -86,15 +89,15 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         String parentId = null;
         for (int i = 0; i < rows.size(); i++) {
             Element row = rows.get(i);
-            parentId = visitSet(gatherer, document, row, parentId);
+            parentId = visitSet(gatherer, main, row, parentId);
         }
     }
 
-    private String visitSet(final Gatherer gatherer, final Document document, final Element row,
+    private String visitSet(final Gatherer gatherer, final Element main, final Element row,
             final String parentId) {
         final Elements cells = row.getElementsByTag("td");
         final Element name = cells.get(0);
-        final Element cardCount = cells.get(1);
+        // final Element cardCount = cells.get(1);
         final Element releaseDate = cells.get(2);
         final Element languages = cells.get(3);
         final String id = extractId(name);
@@ -102,8 +105,9 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final String parentCardSet = isIndent ? parentId : null;
 
         final CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).id(id).symbol().type(BlobType.SVG)
-                .bytes(extractCardSymbol(document, name)).name(extractCardSymbolName(document, name)).source("scryfall")
-                .cardSet().releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet);
+                .bytes(extractCardSymbol(main, name)).name(extractCardSymbolName(name)).source("scryfall")
+                .cardSet().releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet)
+                .languages(extractLanguages(languages));
         gatherer.gatherCardSet(builder.build());
         if (isIndent) {
             return parentId;
@@ -111,12 +115,31 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         return id;
     }
 
+    private Set<String> extractLanguages(Element languages) {
+        Set<String> set = new LinkedHashSet<>();
+        Elements boxes = languages.getElementsByClass("pillbox-item");
+        for (Element box : boxes) {
+            Set<String> classNames = box.classNames();
+            if (!classNames.contains("disabled")) {
+                String text = box.ownText();
+                // Chinese is expressed in actual Chinese characters
+                if ("汉语".equals(text)) {
+                    text = "zhCN";
+                } else if ("漢語".equals(text)) {
+                    text = "zhTW";
+                }
+                set.add(text);
+            }
+        }
+        return set;
+    }
+
     private boolean isIndent(Element name) {
         String tdClass = name.attr("class");
         return tdClass.contains("indent");
     }
 
-    private String extractCardSymbolName(Document document, Element name) {
+    private String extractCardSymbolName(Element name) {
         final Element use = name.getElementsByTag("use").get(0);
         final String xlink = use.attr("xlink:href");
         return xlink.substring(1);
@@ -135,10 +158,10 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         }
     }
 
-    private byte[] extractCardSymbol(Document document, Element name) {
+    private byte[] extractCardSymbol(Element main, Element name) {
         final Element use = name.getElementsByTag("use").get(0);
         final String xlink = use.attr("xlink:href");
-        final Element svgElement = document.getElementById(xlink.substring(1));
+        final Element svgElement = main.getElementById(xlink.substring(1));
         String svg = svgElement.outerHtml();
         if (svg.startsWith("<symbol") && svg.endsWith("symbol>")) {
             svg = "<svg" + svg.substring(7, svg.length() - 7) + "svg>";

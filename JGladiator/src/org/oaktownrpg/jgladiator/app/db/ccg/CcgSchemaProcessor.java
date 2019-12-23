@@ -5,6 +5,7 @@ package org.oaktownrpg.jgladiator.app.db.ccg;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -90,17 +91,30 @@ public class CcgSchemaProcessor {
     }
 
     public boolean upsertCardSet(CardSet cardSet, UUID symbolId) {
+        // Upsert the Card Set itself
         try {
             TableOperations.upsert(CcgSchema.CARD_SET).value(CardSetTable.CARD_SET_ID, cardSet.getId())
                     .value(CardSetTable.CCG_ID, cardSet.getCcg())
                     .value(CardSetTable.RELEASE_DATE, cardSet.getReleaseDate())
                     .value(CardSetTable.INFO, cardSet.getInformation()).value(CardSetTable.SYMBOL_REF, symbolId)
-                    .value(CardSetTable.PARENT_SET_ID, cardSet.getParentCardSet())
-                    .execute(connection);
+                    .value(CardSetTable.PARENT_SET_ID, cardSet.getParentCardSet()).execute(connection);
             logger.info("UPSERTED Card Set '" + cardSet.getId() + "'");
         } catch (BuilderException | SQLException e) {
             logger.severe(e.getMessage());
             return false;
+        }
+        // Upsert the languages of the Card Set
+        Set<String> languages = cardSet.getLanguages();
+        for (String language : languages) {
+            try {
+                TableOperations.upsert(CcgSchema.CARD_SET_LOCALE).value(CardSetLocaleTable.CCG_ID, cardSet.getCcg())
+                        .value(CardSetLocaleTable.CARD_SET_ID, cardSet.getId())
+                        .value(CardSetLocaleTable.LOCALE, language).execute(connection);
+            } catch (BuilderException | SQLException e) {
+                logger.severe(e.getMessage());
+                return false;
+            }
+            logger.info("UPSERTED Card Set Locale '" + cardSet.getId() + "' " + language);
         }
         return true;
     }

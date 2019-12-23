@@ -4,6 +4,7 @@
 package org.oaktownrpg.jgladiator.framework.ccg;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Identifying set of cards
@@ -19,6 +20,7 @@ public final class CardSet {
     private String information;
     private String parentCardSet;
     private CardSetSymbol symbol;
+    private Set<String> languages;
 
     CardSet() {
     }
@@ -69,6 +71,14 @@ public final class CardSet {
 
     void setSymbol(CardSetSymbol symbol) {
         this.symbol = symbol;
+    }
+
+    public Set<String> getLanguages() {
+        return languages;
+    }
+
+    void setLanguages(Set<String> languages) {
+        this.languages = languages;
     }
 
     @Override

@@ -3,7 +3,10 @@
  */
 package org.oaktownrpg.jgladiator.framework.ccg;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Builds a card set
@@ -44,7 +47,12 @@ public class CardSetBuilder {
         cardSet.setParentCardSet(id);
         return this;
     }
-    
+
+    public CardSetBuilder languages(Set<String> languages) {
+        cardSet.setLanguages(Collections.unmodifiableSet(new LinkedHashSet<>(languages)));
+        return this;
+    }
+
     public CardSetSymbolBuilder symbol() {
         return new CardSetSymbolBuilder(this);
     }

@@ -79,16 +79,20 @@ public class UpsertPredicate {
             sql.append("?");
             stmtParams.add(pkValues.get(i));
         }
-        sql.append(" WHEN MATCHED THEN");
-        sql.append(" UPDATE SET ");
-        for (int i = 0; i < nonPkColumns.size(); i++) {
-            if (i > 0) {
-                sql.append(", ");
+        if (pkColumns.size() == columns.size() && nonPkColumns.size() == 0) {
+            // No-op
+        } else {
+            sql.append(" WHEN MATCHED THEN");
+            sql.append(" UPDATE SET ");
+            for (int i = 0; i < nonPkColumns.size(); i++) {
+                if (i > 0) {
+                    sql.append(", ");
+                }
+                sql.append(nonPkColumns.get(i));
+                sql.append(" = ");
+                sql.append("?");
+                stmtParams.add(nonPkValues.get(i));
             }
-            sql.append(nonPkColumns.get(i));
-            sql.append(" = ");
-            sql.append("?");
-            stmtParams.add(nonPkValues.get(i));
         }
         sql.append(" WHEN NOT MATCHED THEN");
         sql.append(" INSERT (");
