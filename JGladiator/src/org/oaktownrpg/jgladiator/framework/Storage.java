@@ -3,8 +3,10 @@
  */
 package org.oaktownrpg.jgladiator.framework;
 
+import java.util.List;
 import java.util.function.Supplier;
 
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentity;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 
 /**
@@ -43,5 +45,12 @@ public interface Storage {
      * @param cardSet
      */
     void storeCardSet(CardSet cardSet);
+
+    /**
+     * Insert or update the given Card Identity
+     * 
+     * @param identity
+     */
+    void storeCardIdentity(List<CardIdentity> identity);
 
 }

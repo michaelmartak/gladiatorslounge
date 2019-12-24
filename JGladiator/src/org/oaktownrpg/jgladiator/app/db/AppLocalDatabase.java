@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.AppExecutors;
 import org.oaktownrpg.jgladiator.app.db.ccg.CcgSchemaProcessor;
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentity;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 
 /**
@@ -89,6 +91,10 @@ public class AppLocalDatabase {
 
     public Future<Boolean> upsertCardSet(CardSet cardSet, UUID symbolId) {
         return databaseExecutor.submit(() -> ccgSchema.upsertCardSet(cardSet, symbolId));
+    }
+
+    public Future<Boolean> upsertCardIdentity(List<CardIdentity> identity) {
+        return databaseExecutor.submit(() -> ccgSchema.upsertCardIdentity(identity));
     }
 
 }

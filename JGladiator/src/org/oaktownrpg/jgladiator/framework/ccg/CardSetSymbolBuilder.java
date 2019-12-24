@@ -9,7 +9,7 @@ import org.oaktownrpg.jgladiator.framework.BlobType;
  * @author michaelmartak
  *
  */
-public class CardSetSymbolBuilder {
+public final class CardSetSymbolBuilder {
 
     private final CardSetBuilder setBuilder;
     private final CardSetSymbol symbol = new CardSetSymbol();

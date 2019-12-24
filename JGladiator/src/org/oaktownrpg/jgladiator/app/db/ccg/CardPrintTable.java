@@ -82,13 +82,19 @@ enum CardPrintTable {
      * Localized Oracle Text, if different from the Card Identity.
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
-    ORACLE_TEXT,
+    L_ORACLE_TEXT,
 
     /**
-     * The localized flavor text for a card, if different from the Card Identity.
+     * The localized flavor text for a card.
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
     FLAVOR_TEXT,
+
+    /**
+     * The alternate flavor text for a card.
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
+    ALT_FLAVOR_TEXT,
 
     /**
      * The rarity of the card within the set, if applicable.
@@ -120,6 +126,18 @@ enum CardPrintTable {
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 100)
     BACK_ARTIST,
+
+    /**
+     * Watermark
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    WATERMARK,
+
+    /**
+     * Alternate watermark
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    ALT_WATERMARK,
 
     /**
      * The availability of material variants for this print. For example, foil

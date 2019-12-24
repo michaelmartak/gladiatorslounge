@@ -5,12 +5,16 @@ package org.oaktownrpg.jgladiator.app.db.ccg;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.app.db.SchemaBuilder;
 import org.oaktownrpg.jgladiator.app.db.TableOperations;
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentity;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.mtg.MtgFormat;
@@ -93,12 +97,12 @@ public class CcgSchemaProcessor {
     public boolean upsertCardSet(CardSet cardSet, UUID symbolId) {
         // Upsert the Card Set itself
         try {
-            TableOperations.upsert(CcgSchema.CARD_SET).value(CardSetTable.CARD_SET_ID, cardSet.getId())
-                    .value(CardSetTable.CCG_ID, cardSet.getCcg())
-                    .value(CardSetTable.RELEASE_DATE, cardSet.getReleaseDate())
-                    .value(CardSetTable.EXPANSION_CODE, cardSet.getExpansionCode())
-                    .value(CardSetTable.INFO, cardSet.getInformation()).value(CardSetTable.SYMBOL_REF, symbolId)
-                    .value(CardSetTable.PARENT_SET_ID, cardSet.getParentCardSet()).execute(connection);
+            TableOperations.upsert(CcgSchema.CARD_SET, Collections.singletonList(cardSet))
+                    .value(CardSetTable.CARD_SET_ID, CardSet::getId).value(CardSetTable.CCG_ID, CardSet::getCcg)
+                    .value(CardSetTable.RELEASE_DATE, CardSet::getReleaseDate)
+                    .value(CardSetTable.EXPANSION_CODE, CardSet::getExpansionCode)
+                    .value(CardSetTable.INFO, CardSet::getInformation).value(CardSetTable.SYMBOL_REF, (cs) -> symbolId)
+                    .value(CardSetTable.PARENT_SET_ID, CardSet::getParentCardSet).execute(connection);
             logger.info("UPSERTED Card Set '" + cardSet.getId() + "'");
         } catch (BuilderException | SQLException e) {
             logger.severe(e.getMessage());
@@ -106,17 +110,44 @@ public class CcgSchemaProcessor {
         }
         // Upsert the languages of the Card Set
         Set<String> languages = cardSet.getLanguages();
-        for (String language : languages) {
-            try {
-                TableOperations.upsert(CcgSchema.CARD_SET_LOCALE).value(CardSetLocaleTable.CCG_ID, cardSet.getCcg())
-                        .value(CardSetLocaleTable.CARD_SET_ID, cardSet.getId())
-                        .value(CardSetLocaleTable.LOCALE, language).execute(connection);
-            } catch (BuilderException | SQLException e) {
-                logger.severe(e.getMessage());
-                return false;
-            }
-            logger.info("UPSERTED Card Set Locale '" + cardSet.getId() + "' " + language);
+        try {
+            TableOperations.upsert(CcgSchema.CARD_SET_LOCALE, new ArrayList<String>(languages))
+                    .value(CardSetLocaleTable.CCG_ID, (l) -> cardSet.getCcg())
+                    .value(CardSetLocaleTable.CARD_SET_ID, (l) -> cardSet.getId())
+                    .value(CardSetLocaleTable.LOCALE, (l) -> l).execute(connection);
+        } catch (BuilderException | SQLException e) {
+            logger.severe(e.getMessage());
+            return false;
         }
+        logger.info("UPSERTED Card Set Locale '" + cardSet.getId() + "' " + languages);
+        return true;
+    }
+
+    public boolean upsertCardIdentity(List<CardIdentity> items) {
+        long startTime = System.currentTimeMillis();
+        try {
+            TableOperations.upsert(CcgSchema.CARD_IDENTITY, items).value(CardIdentityTable.CCG_ID, CardIdentity::getCcg)
+                    .value(CardIdentityTable.CARD_ID, CardIdentity::getCardId)
+                    .value(CardIdentityTable.TYPE, CardIdentity::getType)
+                    .value(CardIdentityTable.ALT_TYPE, CardIdentity::getAltType)
+                    .value(CardIdentityTable.MANA_COST, CardIdentity::getManaCost)
+                    .value(CardIdentityTable.ALT_MANA_COST, CardIdentity::getAltManaCost)
+                    .value(CardIdentityTable.CMC, CardIdentity::getCmc)
+                    .value(CardIdentityTable.ALT_CMC, CardIdentity::getAltCmc)
+                    .value(CardIdentityTable.COLOR, CardIdentity::getColor)
+                    .value(CardIdentityTable.ALT_COLOR, CardIdentity::getAltColor)
+                    .value(CardIdentityTable.COLOR_IDENTITY, CardIdentity::getColorIdentity)
+                    .value(CardIdentityTable.POWER, CardIdentity::getPower)
+                    .value(CardIdentityTable.TOUGHNESS, CardIdentity::getToughness)
+                    .value(CardIdentityTable.ORACLE_TEXT, CardIdentity::getOracleText)
+                    .value(CardIdentityTable.ALT_ORACLE_TEXT, CardIdentity::getAltOracleText)
+                    .value(CardIdentityTable.RULINGS, CardIdentity::getRulings).execute(connection);
+        } catch (SQLException | BuilderException e) {
+            logger.severe(e.getMessage());
+            return false;
+        }
+        long endTime = System.currentTimeMillis();
+        logger.info("UPSERTED " + items.size() + " card identites, took " + (endTime - startTime) + " ms");
         return true;
     }
 

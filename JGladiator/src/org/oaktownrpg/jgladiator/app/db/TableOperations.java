@@ -5,6 +5,7 @@ package org.oaktownrpg.jgladiator.app.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.oaktownrpg.jgladiator.util.BuilderException;
@@ -36,8 +37,8 @@ public final class TableOperations {
         return new InsertPredicate(table);
     }
 
-    public static UpsertPredicate upsert(Enum<?> table) throws BuilderException {
-        return new UpsertPredicate(table);
+    public static <T> UpsertPredicate<T> upsert(Enum<?> table, List<? extends T> items) throws BuilderException {
+        return new UpsertPredicate<>(table, items);
     }
 
     public static Object predicateValue(Object value) {

@@ -23,6 +23,8 @@ import org.oaktownrpg.jgladiator.framework.Http;
  */
 class AppHttp implements Http {
 
+    private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    
     /**
      * 
      */
@@ -30,8 +32,8 @@ class AppHttp implements Http {
     }
 
     @Override
-    public HttpClient newHttpClient() {
-        return HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    public HttpClient httpClient() {
+        return httpClient;
     }
 
     @Override
@@ -41,7 +43,6 @@ class AppHttp implements Http {
 
     @Override
     public HttpResponse<String> get(URI uri) throws IOException, InterruptedException {
-        HttpClient httpClient = newHttpClient();
         final HttpRequest request = HttpRequest.newBuilder(uri).setHeader("User-Agent", "JGladiator").GET().build();
         return httpClient.send(request, BodyHandlers.ofString());
     }

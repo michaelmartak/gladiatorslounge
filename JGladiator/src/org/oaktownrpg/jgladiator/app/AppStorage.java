@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Future;
@@ -18,6 +19,7 @@ import org.oaktownrpg.jgladiator.app.blob.AppBlobStore;
 import org.oaktownrpg.jgladiator.app.blob.BlobMetadata;
 import org.oaktownrpg.jgladiator.app.db.AppLocalDatabase;
 import org.oaktownrpg.jgladiator.framework.Storage;
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentity;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSetSymbol;
 
@@ -170,6 +172,18 @@ class AppStorage implements Storage {
         metadata.setSource(symbol.getSource());
         AppBlob blob = new AppBlob(metadata, bytes);
         return blob;
+    }
+
+    @Override
+    public void storeCardIdentity(List<CardIdentity> identity) {
+        try {
+            final Future<Boolean> dbResult = localDatabase.upsertCardIdentity(identity);
+            if (!dbResult.get()) {
+                Logger.getLogger(getClass().getName()).severe("Card identity result store FALSE");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).severe("Cannot store card identity " + e.getMessage());
+        }
     }
 
 }

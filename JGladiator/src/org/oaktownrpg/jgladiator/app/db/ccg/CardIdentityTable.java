@@ -42,56 +42,77 @@ enum CardIdentityTable {
     TYPE,
 
     /**
-     * Primary cost (for example, MtG = mana cost, including color)
+     * Alternate types and/or subtypes
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    ALT_TYPE,
+
+    /**
+     * Primary cost (for example, MtG = mana cost)
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 48)
     MANA_COST,
 
     /**
      * Secondary cost (for example, MtG = CMC)
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 48)
     CMC,
 
     /**
-     * First searchable attribute (MtG = Color)
+     * Alternate cost (for example, MtG = Adventure cost)
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 48)
+    ALT_MANA_COST,
+
+    /**
+     * Secondary cost (for example, MtG = Adventure CMC)
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 48)
+    ALT_CMC,
+
+    /**
+     * Searchable attribute (MtG = Color)
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 32)
     COLOR,
 
     /**
-     * Second searchable attribute (MtG = Power)
+     * Alternate color
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    ALT_COLOR,
+
+    /**
+     * Searchable attribute (MtG = Color identity (e.g., Commander))
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    COLOR_IDENTITY,
+
+    /**
+     * Second searchable attribute (MtG = Power)
+     */
+    @DatabaseColumn(type = DataType.VARCHAR, max = 8)
     POWER,
 
     /**
      * Third searchable attribute (MtG = Toughness)
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 8)
     TOUGHNESS,
 
-    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
-    ATTRIBUTE_D,
-
-    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
-    ATTRIBUTE_E,
-    
-    @DatabaseColumn(type = DataType.VARCHAR, max = 32)
-    ATTRIBUTE_F,
-    
     /**
-     * The (up to date) rules text for a card. Does not include rules clarifications
+     * The oracle text for a card. Does not include rules clarifications
      * or interpretations. English only.
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
     ORACLE_TEXT,
 
     /**
-     * The flavor text for a card.
+     * The alternate oracle text for a card.
      */
     @DatabaseColumn(type = DataType.VARCHAR, max = 1024)
-    FLAVOR_TEXT,
+    ALT_ORACLE_TEXT,
 
     /**
      * Rules clarifications and interpretations.

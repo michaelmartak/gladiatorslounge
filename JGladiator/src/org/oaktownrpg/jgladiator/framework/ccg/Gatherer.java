@@ -3,6 +3,8 @@
  */
 package org.oaktownrpg.jgladiator.framework.ccg;
 
+import java.util.List;
+
 /**
  * Gathers metadata on cards for lookup purposes.
  * <p/>
@@ -22,4 +24,5 @@ public interface Gatherer {
      */
     void gatherCardSet(CardSet cardSet);
 
+    void gatherCardIdentity(List<CardIdentity> identity);
 }

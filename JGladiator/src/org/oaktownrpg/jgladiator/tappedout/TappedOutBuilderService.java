@@ -31,7 +31,7 @@ final class TappedOutBuilderService extends AbstractBuilderService<TappedOutServ
 
     @Override
     public void start(Consumer<ServiceFailure> onFailure, Runnable onReady) {
-        httpClient = hub().http().newHttpClient();
+        httpClient = hub().http().httpClient();
         final HttpRequest request = newHttpRequestGET();
         try {
             HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());

@@ -8,8 +8,10 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -19,6 +21,8 @@ import org.jsoup.select.Elements;
 import org.oaktownrpg.jgladiator.framework.BlobType;
 import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentity;
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentityBuilder;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSetBuilder;
 import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
@@ -36,7 +40,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
 
     }
 
-    private static final URI SCRYFALL_URI = URI.create("https://scryfall.com/sets");
+    private static final URI SCRYFALL_SETS_URI = URI.create("https://scryfall.com/sets");
 
     /**
      * 
@@ -66,14 +70,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
 
     private void gatherSets(final Gatherer gatherer) throws IOException, InterruptedException {
         // Start from "sets"
-        final Http http = hub().http();
-        final HttpResponse<String> response = http.get(SCRYFALL_URI);
-        final int statusCode = response.statusCode();
-        if (statusCode != 200) {
-            throw new IOException("Status " + statusCode);
-        }
-        final String body = response.body();
-        final Document document = http.parse(body);
+        final Document document = visit(SCRYFALL_SETS_URI);
         final Element main = document.getElementById("main");
         // js-checklist is the table with the list of sets.
         Element checklist = document.getElementById("js-checklist");
@@ -93,8 +90,19 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         }
     }
 
-    private String visitSet(final Gatherer gatherer, final Element main, final Element row,
-            final String parentId) {
+    private Document visit(URI uri) throws IOException, InterruptedException {
+        final Http http = hub().http();
+        final HttpResponse<String> response = http.get(uri);
+        final int statusCode = response.statusCode();
+        if (statusCode != 200) {
+            throw new IOException("Status " + statusCode);
+        }
+        final String body = response.body();
+        return http.parse(body);
+    }
+
+    private String visitSet(final Gatherer gatherer, final Element main, final Element row, final String parentId)
+            throws IOException, InterruptedException {
         final Elements cells = row.getElementsByTag("td");
         final Element name = cells.get(0);
         // final Element cardCount = cells.get(1);
@@ -105,15 +113,118 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final String parentCardSet = isIndent ? parentId : null;
 
         final CardSetBuilder builder = new CardSetBuilder().ccg(Ccg.MTG).id(id).symbol().type(BlobType.SVG)
-                .bytes(extractCardSymbol(main, name)).name(extractCardSymbolName(name)).source("scryfall")
-                .cardSet().releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet)
+                .bytes(extractCardSymbol(main, name)).name(extractCardSymbolName(name)).source("scryfall").cardSet()
+                .releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet)
                 .languages(extractLanguages(languages)).expansionCode(extractExpansionCode(name));
         gatherer.gatherCardSet(builder.build());
-        
+
+        visitSetCards(gatherer, id, extractCardListUri(name));
+
         if (isIndent) {
             return parentId;
         }
         return id;
+    }
+
+    private URI extractCardListUri(Element name) {
+        final Elements anchors = name.getElementsByTag("a");
+        if (anchors.isEmpty()) {
+            return null;
+        }
+        final Element anchor = anchors.get(0);
+        String href = anchor.attr("href");
+        return URI.create(href);
+    }
+
+    private void visitSetCards(Gatherer gatherer, String setId, URI uri) throws IOException, InterruptedException {
+        if (uri == null) {
+            return;
+        }
+        final Document document = visit(uri);
+        final Element main = document.getElementById("main");
+        final Elements cardGridItemCards = main.getElementsByClass("card-grid-item-card");
+        final List<CardIdentity> cardIdentities = new ArrayList<>();
+        for (Element cardGridItemCard : cardGridItemCards) {
+            String href = cardGridItemCard.attr("href");
+            CardIdentity identity = visitSetCard(gatherer, setId, URI.create(href));
+            if (identity != null) {
+                cardIdentities.add(identity);
+            }
+        }
+        // Gather all card identities for this set
+        gatherer.gatherCardIdentity(cardIdentities);
+    }
+
+    private CardIdentity visitSetCard(Gatherer gatherer, String setId, URI uri) throws IOException, InterruptedException {
+        if (uri == null) {
+            return null;
+        }
+        final Document document = visit(uri);
+        final Element main = document.getElementById("main");
+        final Elements cardTexts = main.getElementsByClass("card-text");
+        if (cardTexts.isEmpty()) {
+            Logger.getLogger(getClass()).severe("Card Text area not found");
+        }
+        final Element cardText = cardTexts.get(0);
+        final String cardId = extractCardId(cardText);
+        if (cardId == null) {
+            Logger.getLogger(getClass()).severe("Card ID not found");
+            return null;
+        }
+
+        final Elements types = cardText.getElementsByClass("card-text-type-line");
+        final Elements manaCosts = cardText.getElementsByClass("card-text-mana-cost");
+
+        // First visit the CardIdentity
+        final CardIdentityBuilder identityBuilder = new CardIdentityBuilder().ccg(Ccg.MTG).cardId(cardId)
+                .type(extractType(types)).altType(extractAltType(types)).manaCost(extractManaCost(manaCosts))
+                .altManaCost(extractAltManaCost(manaCosts));
+        return identityBuilder.build();
+    }
+
+    private String extractAltManaCost(Elements manaCosts) {
+        if (manaCosts.size() < 2) {
+            return null;
+        }
+        return extractManaSymbols(manaCosts.get(1));
+    }
+
+    private String extractManaCost(Elements manaCosts) {
+        if (manaCosts.isEmpty()) {
+            return null;
+        }
+        return extractManaSymbols(manaCosts.get(0));
+    }
+
+    private String extractManaSymbols(Element element) {
+        final Elements abbr = element.getElementsByTag("abbr");
+        StringBuilder sb = new StringBuilder();
+        for (Element symbol : abbr) {
+            sb.append(symbol.ownText());
+        }
+        return sb.toString();
+    }
+
+    private String extractAltType(Elements types) {
+        if (types.size() < 2) {
+            return null;
+        }
+        return types.get(1).ownText();
+    }
+
+    private String extractType(Elements types) {
+        if (types.isEmpty()) {
+            return null;
+        }
+        return types.get(0).ownText();
+    }
+
+    private String extractCardId(Element cardText) {
+        final Elements titleElements = cardText.getElementsByClass("card-text-title");
+        if (titleElements.isEmpty()) {
+            return null;
+        }
+        return titleElements.get(0).ownText();
     }
 
     private String extractExpansionCode(Element name) {

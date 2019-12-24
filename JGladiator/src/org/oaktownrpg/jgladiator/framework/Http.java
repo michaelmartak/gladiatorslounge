@@ -20,11 +20,11 @@ import org.jsoup.nodes.Document;
 public interface Http {
 
     /**
-     * Creates a new HTTP client
+     * Returns an HTTP client for managing HTTP requests.
      * 
      * @return an http client object, never null
      */
-    HttpClient newHttpClient();
+    HttpClient httpClient();
 
     /**
      * Performs a get request

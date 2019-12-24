@@ -14,7 +14,7 @@ import java.util.Set;
  * @author michaelmartak
  *
  */
-public class CardSetBuilder {
+public final class CardSetBuilder {
 
     private CardSet cardSet = new CardSet();
 

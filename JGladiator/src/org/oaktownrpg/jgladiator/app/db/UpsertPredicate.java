@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.oaktownrpg.jgladiator.app.db.annotation.PrimaryKey;
 import org.oaktownrpg.jgladiator.util.BuilderException;
@@ -18,23 +19,28 @@ import org.oaktownrpg.jgladiator.util.BuilderException;
  * @author michaelmartak
  *
  */
-public class UpsertPredicate {
+public final class UpsertPredicate<T> {
 
     private final String tableName;
+    private final List<? extends T> items;
+
     private final List<String> columns = new ArrayList<>();
-    private final List<Object> values = new ArrayList<>();
     private final List<String> pkColumns = new ArrayList<>();
     private final List<String> nonPkColumns = new ArrayList<>();
-    private final List<Object> pkValues = new ArrayList<>();
-    private final List<Object> nonPkValues = new ArrayList<>();
+
+    private final List<Function<T, Object>> values = new ArrayList<>();
+    private final List<Function<T, Object>> pkValues = new ArrayList<>();
+    private final List<Function<T, Object>> nonPkValues = new ArrayList<>();
 
     /**
      * @throws BuilderException
      * 
      */
-    UpsertPredicate(Enum<?> table) throws BuilderException {
+    UpsertPredicate(Enum<?> table, List<? extends T> items) throws BuilderException {
         assert table != null;
+        assert items != null;
         tableName = SchemaBuilder.sqlTableName(table);
+        this.items = items;
     }
 
     /**
@@ -45,29 +51,28 @@ public class UpsertPredicate {
      * @return
      * @throws BuilderException
      */
-    public UpsertPredicate value(Enum<?> column, Object value) throws BuilderException {
-        value = TableOperations.predicateValue(value);
+    public UpsertPredicate<T> value(Enum<?> column, Function<T, Object> fetchValue) throws BuilderException {
         final String columnName = SchemaBuilder.sqlColumnName(column);
         PrimaryKey pk = SchemaBuilder.annotation(PrimaryKey.class, column);
         if (pk != null) {
             pkColumns.add(columnName);
-            pkValues.add(value);
+            pkValues.add(fetchValue);
         } else {
             nonPkColumns.add(columnName);
-            nonPkValues.add(value);
+            nonPkValues.add(fetchValue);
         }
         columns.add(columnName);
-        values.add(value);
+        values.add(fetchValue);
         return this;
     }
 
-    public boolean execute(Connection connection) throws SQLException {
+    public int[] execute(Connection connection) throws SQLException {
         final StringBuilder sql = new StringBuilder();
         sql.append("MERGE INTO ");
         sql.append(tableName);
         sql.append(" USING SYSIBM.SYSDUMMY1");
         sql.append(" ON ");
-        final List<Object> stmtParams = new ArrayList<>(columns.size() * 3);
+        final List<Function<T, Object>> stmtParams = new ArrayList<>(columns.size() * 3);
         for (int i = 0; i < pkColumns.size(); i++) {
             if (i > 0) {
                 sql.append(" AND ");
@@ -80,7 +85,8 @@ public class UpsertPredicate {
             stmtParams.add(pkValues.get(i));
         }
         if (pkColumns.size() == columns.size() && nonPkColumns.size() == 0) {
-            // No-op. If all columns are the primary key, then we are only inserting new items.
+            // No-op. If all columns are the primary key, then we are only inserting new
+            // items.
             // Existing matches are already in the database.
         } else {
             // Primary key matches, do UPDATE
@@ -111,10 +117,15 @@ public class UpsertPredicate {
         sql.append("?");
         sql.append(")");
         final PreparedStatement stmt = connection.prepareStatement(sql.toString());
-        for (int i = 0; i < stmtParams.size(); i++) {
-            stmt.setObject(i + 1, stmtParams.get(i));
+        for (T item : items) {
+            for (int i = 0; i < stmtParams.size(); i++) {
+                Function<T, Object> fetch = stmtParams.get(i);
+                Object value = TableOperations.predicateValue(fetch.apply(item));
+                stmt.setObject(i + 1, value);
+            }
+            stmt.addBatch();
         }
-        return stmt.execute();
+        return stmt.executeBatch();
     }
 
 }

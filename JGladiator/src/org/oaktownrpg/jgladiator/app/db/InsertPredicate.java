@@ -17,7 +17,7 @@ import org.oaktownrpg.jgladiator.util.BuilderException;
  * @author michaelmartak
  *
  */
-public class InsertPredicate {
+public final class InsertPredicate {
 
     private final String tableName;
     private final List<String> columns = new ArrayList<>();
