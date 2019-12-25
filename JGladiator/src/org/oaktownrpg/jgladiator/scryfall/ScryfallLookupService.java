@@ -34,6 +34,8 @@ import com.sun.istack.logging.Logger;
 /**
  * FIXME use API: https://scryfall.com/docs/api
  * 
+ * Use Jackson / JsonGenerator.
+ * 
  * @author michaelmartak
  *
  */
