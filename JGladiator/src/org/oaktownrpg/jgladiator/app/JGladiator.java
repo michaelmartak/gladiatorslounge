@@ -4,8 +4,11 @@
 package org.oaktownrpg.jgladiator.app;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.oaktownrpg.jgladiator.app.mtg.MtgCardIdentityCatalog;
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
 import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.Http;
@@ -15,6 +18,8 @@ import org.oaktownrpg.jgladiator.framework.Localization;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.Services;
 import org.oaktownrpg.jgladiator.framework.Storage;
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentityCatalog;
+import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 import org.oaktownrpg.jgladiator.ui.JGladiatorUI;
 
@@ -32,6 +37,7 @@ public final class JGladiator implements Hub {
     private final AppServices services = new AppServices(this);
     private final AppStorage storage = new AppStorage();
     private final AppHttp http = new AppHttp();
+    private final Map<Ccg, CardIdentityCatalog> cardIdentityCatalogs = new EnumMap<>(Ccg.class);
 
     /**
      * @param args
@@ -42,6 +48,7 @@ public final class JGladiator implements Hub {
     }
 
     JGladiator() {
+        cardIdentityCatalogs.put(Ccg.MTG, new MtgCardIdentityCatalog());
     }
 
     /**
@@ -115,6 +122,11 @@ public final class JGladiator implements Hub {
     @Override
     public Gatherer cardLookup() {
         return new CardLookupGatherer(this);
+    }
+
+    @Override
+    public CardIdentityCatalog cardIdentityCatalog(Ccg ccg) {
+        return cardIdentityCatalogs.get(ccg);
     }
 
 }

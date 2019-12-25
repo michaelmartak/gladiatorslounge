@@ -23,6 +23,7 @@ import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.ccg.CardIdentity;
 import org.oaktownrpg.jgladiator.framework.ccg.CardIdentityBuilder;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 import org.oaktownrpg.jgladiator.framework.ccg.CardSetBuilder;
 import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
@@ -31,6 +32,8 @@ import org.oaktownrpg.jgladiator.framework.helper.AbstractLookupService;
 import com.sun.istack.logging.Logger;
 
 /**
+ * FIXME use API: https://scryfall.com/docs/api
+ * 
  * @author michaelmartak
  *
  */
@@ -41,6 +44,8 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
     }
 
     private static final URI SCRYFALL_SETS_URI = URI.create("https://scryfall.com/sets");
+
+    private Logger logger = Logger.getLogger(getClass());
 
     /**
      * 
@@ -116,9 +121,10 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
                 .bytes(extractCardSymbol(main, name)).name(extractCardSymbolName(name)).source("scryfall").cardSet()
                 .releaseDate(extractReleaseDate(releaseDate)).parentCardSet(parentCardSet)
                 .languages(extractLanguages(languages)).expansionCode(extractExpansionCode(name));
-        gatherer.gatherCardSet(builder.build());
+        final CardSet cardSet = builder.build();
+        gatherer.gatherCardSet(cardSet);
 
-        visitSetCards(gatherer, id, extractCardListUri(name));
+        visitSetCards(gatherer, cardSet, extractCardListUri(name));
 
         if (isIndent) {
             return parentId;
@@ -136,7 +142,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         return URI.create(href);
     }
 
-    private void visitSetCards(Gatherer gatherer, String setId, URI uri) throws IOException, InterruptedException {
+    private void visitSetCards(Gatherer gatherer, CardSet cardSet, URI uri) throws IOException, InterruptedException {
         if (uri == null) {
             return;
         }
@@ -146,16 +152,17 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final List<CardIdentity> cardIdentities = new ArrayList<>();
         for (Element cardGridItemCard : cardGridItemCards) {
             String href = cardGridItemCard.attr("href");
-            CardIdentity identity = visitSetCard(gatherer, setId, URI.create(href));
+            CardIdentity identity = visitSetCard(gatherer, cardSet.getId(), URI.create(href));
             if (identity != null) {
                 cardIdentities.add(identity);
             }
         }
         // Gather all card identities for this set
-        gatherer.gatherCardIdentity(cardIdentities);
+        gatherer.gatherCardIdentity(cardSet, cardIdentities);
     }
 
-    private CardIdentity visitSetCard(Gatherer gatherer, String setId, URI uri) throws IOException, InterruptedException {
+    private CardIdentity visitSetCard(Gatherer gatherer, String setId, URI uri)
+            throws IOException, InterruptedException {
         if (uri == null) {
             return null;
         }
@@ -163,23 +170,51 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
         final Element main = document.getElementById("main");
         final Elements cardTexts = main.getElementsByClass("card-text");
         if (cardTexts.isEmpty()) {
-            Logger.getLogger(getClass()).severe("Card Text area not found");
+            logger.severe("Card Text area not found");
         }
         final Element cardText = cardTexts.get(0);
         final String cardId = extractCardId(cardText);
         if (cardId == null) {
-            Logger.getLogger(getClass()).severe("Card ID not found");
+            logger.severe("Card ID not found");
             return null;
         }
 
         final Elements types = cardText.getElementsByClass("card-text-type-line");
         final Elements manaCosts = cardText.getElementsByClass("card-text-mana-cost");
 
-        // First visit the CardIdentity
+        // Visit the CardIdentity
+        final String manaCost = extractManaCost(manaCosts);
+        final String altManaCost = extractAltManaCost(manaCosts);
+
         final CardIdentityBuilder identityBuilder = new CardIdentityBuilder().ccg(Ccg.MTG).cardId(cardId)
-                .type(extractType(types)).altType(extractAltType(types)).manaCost(extractManaCost(manaCosts))
-                .altManaCost(extractAltManaCost(manaCosts));
+                .type(extractType(types)).altType(extractAltType(types)).manaCost(manaCost).altManaCost(altManaCost)
+                .cmc(toCmc(manaCost)).altCmc(toCmc(altManaCost));
         return identityBuilder.build();
+    }
+
+    private String toCmc(String manaCost) {
+        if (manaCost == null) {
+            return null;
+        }
+        if (manaCost.length() < 2) {
+            return manaCost;
+        }
+        manaCost = manaCost.substring(1, manaCost.length() - 1);
+        int value = 0;
+        String[] tokens = manaCost.split("\\}\\{");
+        for (String token : tokens) {
+            try {
+                int tokenVal = Integer.parseInt(token);
+                value += tokenVal;
+            } catch (NumberFormatException ex) {
+                if ("X".equals(token)) {
+                    // Ignored
+                } else {
+                    value++;
+                }
+            }
+        }
+        return Integer.toString(value);
     }
 
     private String extractAltManaCost(Elements manaCosts) {
@@ -274,7 +309,7 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
             Date date = format.parse(dateString);
             return date;
         } catch (ParseException e) {
-            Logger.getLogger(getClass()).warning(e.getMessage());
+            logger.warning(e.getMessage());
             return null;
         }
     }

@@ -3,6 +3,8 @@
  */
 package org.oaktownrpg.jgladiator.framework.ccg;
 
+import java.util.Objects;
+
 /**
  * Card identification information.
  * 
@@ -162,6 +164,23 @@ public final class CardIdentity {
 
     void setRulings(String rulings) {
         this.rulings = rulings;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cardId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CardIdentity other = (CardIdentity) obj;
+        return Objects.equals(cardId, other.cardId);
     }
 
 }

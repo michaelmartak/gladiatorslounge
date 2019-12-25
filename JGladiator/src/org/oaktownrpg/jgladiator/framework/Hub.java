@@ -3,6 +3,8 @@
  */
 package org.oaktownrpg.jgladiator.framework;
 
+import org.oaktownrpg.jgladiator.framework.ccg.CardIdentityCatalog;
+import org.oaktownrpg.jgladiator.framework.ccg.Ccg;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 
 /**
@@ -58,5 +60,12 @@ public interface Hub {
      * @return a card lookup gatherer object
      */
     Gatherer cardLookup();
+
+    /**
+     * Returns the catalog of known cards for the given CCG.
+     * 
+     * @return a card catalog, never null
+     */
+    CardIdentityCatalog cardIdentityCatalog(Ccg ccg);
 
 }

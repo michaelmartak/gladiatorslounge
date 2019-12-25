@@ -24,5 +24,12 @@ public interface Gatherer {
      */
     void gatherCardSet(CardSet cardSet);
 
-    void gatherCardIdentity(List<CardIdentity> identity);
+    /**
+     * Called when card identity information is gathered for a given card set
+     * 
+     * @param cardSet
+     * @param identity a collection of card identity objects
+     */
+    void gatherCardIdentity(CardSet cardSet, List<CardIdentity> identity);
+
 }
