@@ -19,7 +19,8 @@
 	</properties>
 
     <modules>
-        <module>jgladiator-framework</module>
+        <module>framework</module>
+        <module>ui</module>
     </modules>
 
 	<dependencies>
