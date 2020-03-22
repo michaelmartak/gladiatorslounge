@@ -1,8 +1,5 @@
-/bin/
 /target/
 /.DS_Store
 /derby.log
 /derbyDB/
-/.jgladiator/
-/.jgladiator_test/
 /.settings/
