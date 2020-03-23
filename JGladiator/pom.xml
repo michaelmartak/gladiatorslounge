@@ -22,6 +22,7 @@
 		<module>edhrec</module>
 		<module>framework</module>
 		<module>ui</module>
+        <module>wizards</module>
 	</modules>
 
 	<build>
