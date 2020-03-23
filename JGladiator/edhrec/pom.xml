@@ -8,17 +8,17 @@
 		<artifactId>jgladiator</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	
-	<artifactId>ui</artifactId>
-	<packaging>jar</packaging>
-	<name>Gladiators Lounge, User Interface</name>
-	<url>https://github.com/michaelmartak/gladiatorslounge/JGladiator/ui</url>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.oaktownrpg</groupId>
-            <artifactId>framework</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+	<artifactId>edhrec</artifactId>
+	<packaging>jar</packaging>
+	<name>Gladiators Lounge, EDHREC Resources</name>
+	<url>https://github.com/michaelmartak/gladiatorslounge/JGladiator/edhrec</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.oaktownrpg</groupId>
+			<artifactId>framework</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

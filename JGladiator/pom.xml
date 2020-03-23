@@ -18,10 +18,26 @@
 		<org.apache.xmlgraphics.version>1.12</org.apache.xmlgraphics.version>
 	</properties>
 
-    <modules>
-        <module>framework</module>
-        <module>ui</module>
-    </modules>
+	<modules>
+		<module>edhrec</module>
+		<module>framework</module>
+		<module>ui</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.12</source>
+						<target>1.12</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 	<dependencies>
 		<dependency>
