@@ -66,7 +66,7 @@ public class JGladiatorUI extends AbstractService<JGladiatorUIServiceProvider>
             EventQueue.invokeAndWait(this);
             onReady.run();
         } catch (InvocationTargetException | InterruptedException e) {
-            onFailure.accept(new ServiceFailure(Severity.FATAL, hub().localization().string("ui.failure"), e));
+            onFailure.accept(new ServiceFailure(Severity.FATAL, localize("ui.failure"), e));
         }
     }
 
@@ -82,7 +82,7 @@ public class JGladiatorUI extends AbstractService<JGladiatorUIServiceProvider>
         // Main window settings
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle(hub().localization().string("jgladiator.frameTitle"));
+        frame.setTitle(localize("jgladiator.frameTitle"));
         // Main content pane
         JTabbedPane tabs = new JTabbedPane();
         addTab(tabs, "jgladiator.tab.services", servicesTab());
@@ -95,7 +95,7 @@ public class JGladiatorUI extends AbstractService<JGladiatorUIServiceProvider>
     }
 
     private void addTab(JTabbedPane tabs, String title, Container component) {
-        tabs.addTab(hub().localization().string(title), component);
+        tabs.addTab(localize(title), component);
     }
 
     private Container servicesTab() {
@@ -139,7 +139,7 @@ public class JGladiatorUI extends AbstractService<JGladiatorUIServiceProvider>
 
     private Action importAction() {
         RunnableAction action = new RunnableAction();
-        action.putValue(Action.NAME, hub().localization().string("ui.action.import"));
+        action.putValue(Action.NAME, localize("ui.action.import"));
         action.setEnabled(false);
         action.setRunnable(this::gather);
         return action;

@@ -32,11 +32,12 @@ public interface GladiatorServiceProvider {
     void initialize(Hub hub);
 
     /**
-     * Returns the localized name of the service provider (e.g., FOO.com)
+     * Returns the class to use to load localized resources for all provided
+     * services.
      * 
-     * @return a localized string, never null
+     * @return a java class; if null, assumes the default bundle
      */
-    String getLocalizedName();
+    Class<?> localizedResources();
 
     /**
      * Returns a collection of services provided by this provider

@@ -3,7 +3,6 @@
  */
 package org.oaktownrpg.jgladiator.framework.helper;
 
-import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.LookupService;
 import org.oaktownrpg.jgladiator.framework.ServiceType;
 import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
@@ -12,7 +11,7 @@ import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
  * @author michaelmartak
  *
  */
-public abstract class AbstractLookupService<P extends GladiatorServiceProvider> extends AbstractService<P>
+public abstract class AbstractLookupService<P extends AbstractServiceProvider> extends AbstractService<P>
         implements LookupService {
 
     protected AbstractLookupService(P provider, String identifier) {

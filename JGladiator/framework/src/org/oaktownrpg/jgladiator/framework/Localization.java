@@ -17,6 +17,6 @@ public interface Localization {
      * @param key
      * @return a localized string, or an empty string if not found
      */
-    String string(String key);
+    String string(Class<?> type, String key);
 
 }

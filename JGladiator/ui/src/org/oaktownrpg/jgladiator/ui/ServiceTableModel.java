@@ -64,13 +64,13 @@ class ServiceTableModel extends AbstractTableModel {
         final ServiceRow serviceRow = rows.get(row);
         switch (column) {
         case 0:
-            return serviceRow.sp.getLocalizedName();
+            return hub.localization().string(serviceRow.sp.localizedResources(), serviceRow.sp.getIdentifier());
         case 1:
-            return serviceRow.service.getLocalizedName();
+            return hub.localization().string(serviceRow.sp.localizedResources(), serviceRow.service.getIdentifier());
         case 2:
-            return hub.localization().string("ccg." + serviceRow.service.getCcg());
+            return hub.localization().string(null, "ccg." + serviceRow.service.getCcg());
         case 3:
-            return hub.localization().string("jgladiator.service.type." + serviceRow.service.getType().name());
+            return hub.localization().string(null, "jgladiator.service.type." + serviceRow.service.getType().name());
         default:
             return "";
         }
@@ -96,7 +96,7 @@ class ServiceTableModel extends AbstractTableModel {
             return "";
         }
 
-        return hub.localization().string(columnKey);
+        return hub.localization().string(null, columnKey);
     }
 
     public GladiatorService getService(int row) {

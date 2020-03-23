@@ -6,7 +6,6 @@ package org.oaktownrpg.jgladiator.framework.helper;
 import java.util.function.Consumer;
 
 import org.oaktownrpg.jgladiator.framework.GladiatorService;
-import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.Hub;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 
@@ -14,7 +13,7 @@ import org.oaktownrpg.jgladiator.framework.ServiceFailure;
  * @author michaelmartak
  *
  */
-public abstract class AbstractService<P extends GladiatorServiceProvider> implements GladiatorService {
+public abstract class AbstractService<P extends AbstractServiceProvider> implements GladiatorService {
 
     private final P provider;
     private final String identifier;
@@ -30,7 +29,11 @@ public abstract class AbstractService<P extends GladiatorServiceProvider> implem
         this.provider = provider;
         this.identifier = identifier;
     }
-
+    
+    protected final String localize(String key) {
+        return provider.localize(key);
+    }
+    
     @Override
     public final P getProvider() {
         return provider;
@@ -39,11 +42,6 @@ public abstract class AbstractService<P extends GladiatorServiceProvider> implem
     @Override
     public final String getIdentifier() {
         return identifier;
-    }
-
-    @Override
-    public final String getLocalizedName() {
-        return hub.localization().string(identifier);
     }
 
     @Override
@@ -56,7 +54,7 @@ public abstract class AbstractService<P extends GladiatorServiceProvider> implem
     }
 
     protected void serviceFailure(Consumer<ServiceFailure> onFailure, String key, Exception e) {
-        onFailure.accept(new ServiceFailure(hub().localization().string(key), e));
+        onFailure.accept(new ServiceFailure(hub().localization().string(provider.localizedResources(), key), e));
     }
 
 }

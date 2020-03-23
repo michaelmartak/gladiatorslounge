@@ -4,7 +4,6 @@
 package org.oaktownrpg.jgladiator.framework.helper;
 
 import org.oaktownrpg.jgladiator.framework.BuilderService;
-import org.oaktownrpg.jgladiator.framework.GladiatorServiceProvider;
 import org.oaktownrpg.jgladiator.framework.ServiceType;
 import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
 
@@ -12,7 +11,7 @@ import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
  * @author michaelmartak
  *
  */
-public abstract class AbstractBuilderService<P extends GladiatorServiceProvider> extends AbstractService<P>
+public abstract class AbstractBuilderService<P extends AbstractServiceProvider> extends AbstractService<P>
         implements BuilderService {
 
     protected AbstractBuilderService(P provider, String identifier) {

@@ -35,13 +35,6 @@ public interface GladiatorService {
     String getIdentifier();
 
     /**
-     * Returns the localized name of the service
-     * 
-     * @return a localized string, never null
-     */
-    String getLocalizedName();
-
-    /**
      * Returns the type of service
      * 
      * @return an enum type, never null

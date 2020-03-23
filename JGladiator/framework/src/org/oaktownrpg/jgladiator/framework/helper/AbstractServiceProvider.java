@@ -41,6 +41,15 @@ public abstract class AbstractServiceProvider implements GladiatorServiceProvide
         initializeAfterHub(hub);
     }
 
+    @Override
+    public Class<?> localizedResources() {
+        return getClass();
+    }
+    
+    public String localize(String key) {
+        return hub.localization().string(localizedResources(), key);
+    }
+
     protected final void provide(GladiatorService... services) {
         List<GladiatorService> list = new ArrayList<>(services.length);
         for (GladiatorService s : services) {
@@ -66,11 +75,6 @@ public abstract class AbstractServiceProvider implements GladiatorServiceProvide
      */
     protected final Hub hub() {
         return hub;
-    }
-
-    @Override
-    public final String getLocalizedName() {
-        return hub.localization().string(getIdentifier());
     }
 
     @Override
