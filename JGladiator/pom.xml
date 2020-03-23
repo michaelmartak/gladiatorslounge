@@ -21,6 +21,8 @@
 	<modules>
 		<module>edhrec</module>
 		<module>framework</module>
+        <module>scryfall</module>
+        <module>tappedout</module>
 		<module>ui</module>
         <module>wizards</module>
 	</modules>
