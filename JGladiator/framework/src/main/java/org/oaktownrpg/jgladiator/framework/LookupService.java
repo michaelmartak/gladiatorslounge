@@ -5,6 +5,7 @@ package org.oaktownrpg.jgladiator.framework;
 
 import java.util.function.Consumer;
 
+import org.oaktownrpg.jgladiator.framework.ccg.GatherScope;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 
 /**
@@ -30,7 +31,7 @@ public interface LookupService extends ServiceType {
     /**
      * Gather data from the lookup service.
      */
-    default void gather(Consumer<ServiceFailure> onFailure, Gatherer gatherer) {
+    default void gather(Gatherer gatherer, GatherScope scope, String pattern, Consumer<ServiceFailure> onFailure) {
     }
 
 }

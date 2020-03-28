@@ -150,7 +150,8 @@ public class JGladiatorUI extends AbstractService<JGladiatorUIServiceProvider>
             return;
         }
         final LookupService ls = lookupService;
-        hub().executors().execute(() -> ls.gather((failure) -> handleFailure(failure), hub().cardLookup()));
+        hub().executors().execute(
+                () -> ls.gather(hub().cardLookup(), /* scope */ null, "*", (failure) -> handleFailure(failure)));
     }
 
     void handleFailure(ServiceFailure failure) {

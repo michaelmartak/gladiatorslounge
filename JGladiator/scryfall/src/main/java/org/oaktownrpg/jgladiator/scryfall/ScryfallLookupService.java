@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
+import org.oaktownrpg.jgladiator.framework.ccg.GatherScope;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 import org.oaktownrpg.jgladiator.framework.helper.AbstractLookupService;
 
@@ -25,7 +26,8 @@ import com.sun.istack.logging.Logger;
  * <ul>
  * <li>Sets : https://api.scryfall.com/sets</li>
  * <li>Single set info ("mb1") : https://api.scryfall.com/sets/mb1</li>
- * <li>Cards in set (search_uri) : https://api.scryfall.com/cards/search?order=set&q=e%3Amb1&unique=prints</li>
+ * <li>Cards in set (search_uri) :
+ * https://api.scryfall.com/cards/search?order=set&q=e%3Amb1&unique=prints</li>
  * </ul>
  * Use Jackson : http://tutorials.jenkov.com/java-json/jackson-jsonparser.html
  * 
@@ -60,7 +62,8 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
     }
 
     @Override
-    public void gather(Consumer<ServiceFailure> onFailure, final Gatherer gatherer) {
+    public void gather(final Gatherer gatherer, final GatherScope scope, final String pattern,
+            final Consumer<ServiceFailure> onFailure) {
         try {
             gatherSets(gatherer);
         } catch (IOException | InterruptedException e) {
