@@ -28,7 +28,7 @@ import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
 public class AppLocalDatabase {
 
     private static final String EMBEDDED_DRIVER_CLASS = "org.apache.derby.jdbc.EmbeddedDriver";
-    private static final String CONNECTION_URL = "jdbc:derby:derbyDB;create=true";
+    private static final String CONNECTION_URL = "jdbc:derby:.jgladiator/derbyDB;create=true";
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private ExecutorService databaseExecutor;

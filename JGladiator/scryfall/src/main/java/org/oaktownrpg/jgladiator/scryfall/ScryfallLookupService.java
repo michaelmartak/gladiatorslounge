@@ -4,19 +4,13 @@
 package org.oaktownrpg.jgladiator.scryfall;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpResponse;
 import java.util.function.Consumer;
 
-import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.ServiceFailure;
 import org.oaktownrpg.jgladiator.framework.ccg.GatherScope;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 import org.oaktownrpg.jgladiator.framework.helper.AbstractLookupService;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.sun.istack.logging.Logger;
 
 /**
@@ -40,8 +34,6 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
 
     }
 
-    private static final URI SCRYFALL_SETS_URI = URI.create("https://api.scryfall.com/sets");
-
     private Logger logger = Logger.getLogger(getClass());
 
     /**
@@ -64,28 +56,53 @@ class ScryfallLookupService extends AbstractLookupService<ScryfallServiceProvide
     @Override
     public void gather(final Gatherer gatherer, final GatherScope scope, final String pattern,
             final Consumer<ServiceFailure> onFailure) {
+        if (scope == null) {
+            return;
+        }
         try {
-            gatherSets(gatherer);
+            switch (scope) {
+            case CARDS_IN_SET: {
+                gatherCards(gatherer);
+                break;
+            }
+            case CARD_IMAGES: {
+                gatherImages(gatherer);
+                break;
+            }
+            case CARD_PRINTS: {
+                gatherPrints(gatherer);
+                break;
+            }
+            case CARD_SETS: {
+                gatherSets(gatherer);
+                break;
+            }
+            default:
+                return;
+            }
         } catch (IOException | InterruptedException e) {
             serviceFailure(onFailure, "failure.scryfall.gather", e);
         }
     }
 
+    private void gatherPrints(Gatherer gatherer) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void gatherImages(Gatherer gatherer) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void gatherCards(Gatherer gatherer) {
+        // TODO Auto-generated method stub
+        
+    }
+
     private void gatherSets(final Gatherer gatherer) throws IOException, InterruptedException {
-        final Http http = hub().http();
-        // Start from "sets"
-        final HttpResponse<String> response = http.get(SCRYFALL_SETS_URI);
-        final int statusCode = response.statusCode();
-        if (statusCode != 200) {
-            throw new IOException("Status " + statusCode);
-        }
-        final String body = response.body();
-        JsonFactory factory = new JsonFactory();
-        JsonParser parser = factory.createParser(body);
-        while (!parser.isClosed()) {
-            JsonToken jsonToken = parser.nextToken();
-            System.out.println("jsonToken = " + jsonToken);
-        }
+        ScryfallSetsVisitor sets = new ScryfallSetsVisitor(hub());
+        sets.visit(gatherer);
     }
 
 }

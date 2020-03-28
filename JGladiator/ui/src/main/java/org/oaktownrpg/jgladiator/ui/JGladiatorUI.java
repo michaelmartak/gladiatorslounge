@@ -32,6 +32,7 @@ import org.oaktownrpg.jgladiator.framework.ServiceFailure.Severity;
 import org.oaktownrpg.jgladiator.framework.ServiceType;
 import org.oaktownrpg.jgladiator.framework.ServiceTypeEnum;
 import org.oaktownrpg.jgladiator.framework.UIService;
+import org.oaktownrpg.jgladiator.framework.ccg.GatherScope;
 import org.oaktownrpg.jgladiator.framework.helper.AbstractService;
 
 /**
@@ -151,7 +152,7 @@ public class JGladiatorUI extends AbstractService<JGladiatorUIServiceProvider>
         }
         final LookupService ls = lookupService;
         hub().executors().execute(
-                () -> ls.gather(hub().cardLookup(), /* scope */ null, "*", (failure) -> handleFailure(failure)));
+                () -> ls.gather(hub().cardLookup(), GatherScope.CARD_SETS, "*", (failure) -> handleFailure(failure)));
     }
 
     void handleFailure(ServiceFailure failure) {
