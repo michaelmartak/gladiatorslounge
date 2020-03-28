@@ -100,9 +100,9 @@ public class CcgSchemaProcessor {
             TableOperations.upsert(CcgSchema.CARD_SET, Collections.singletonList(cardSet))
                     .value(CardSetTable.CARD_SET_ID, CardSet::getId).value(CardSetTable.CCG_ID, CardSet::getCcg)
                     .value(CardSetTable.RELEASE_DATE, CardSet::getReleaseDate)
-                    .value(CardSetTable.EXPANSION_CODE, CardSet::getExpansionCode)
+                    .value(CardSetTable.CODE, CardSet::getCode)
                     .value(CardSetTable.INFO, CardSet::getInformation).value(CardSetTable.SYMBOL_REF, (cs) -> symbolId)
-                    .value(CardSetTable.PARENT_SET_ID, CardSet::getParentCardSet).execute(connection);
+                    .value(CardSetTable.PARENT_SET_CODE, CardSet::getParentSetCode).execute(connection);
             logger.info("UPSERTED Card Set '" + cardSet.getId() + "'");
         } catch (BuilderException | SQLException e) {
             logger.severe(e.getMessage());

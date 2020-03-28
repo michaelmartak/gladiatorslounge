@@ -28,7 +28,7 @@ enum InventoryTable {
     /**
      * The card set the printed card belongs to
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     @NotNull
     @PrimaryKey
     @ForeignKey(table = "CARD_SET", fields = { "CCG_ID", "CARD_SET_ID" })
@@ -46,7 +46,7 @@ enum InventoryTable {
     /**
      * The card's identity in the larger scope of the Ccg
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     @NotNull
     @PrimaryKey
     @ForeignKey(table = "CARD_IDENTITY", fields = { "CCG_ID", "CARD_ID" })

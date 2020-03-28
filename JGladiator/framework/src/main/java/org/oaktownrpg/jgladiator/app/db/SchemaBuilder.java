@@ -17,6 +17,7 @@ import org.oaktownrpg.jgladiator.app.db.annotation.DatabaseTable;
 import org.oaktownrpg.jgladiator.app.db.annotation.ForeignKey;
 import org.oaktownrpg.jgladiator.app.db.annotation.NotNull;
 import org.oaktownrpg.jgladiator.app.db.annotation.PrimaryKey;
+import org.oaktownrpg.jgladiator.app.db.annotation.Unique;
 import org.oaktownrpg.jgladiator.util.BuilderException;
 
 import com.sun.istack.logging.Logger;
@@ -138,11 +139,34 @@ public class SchemaBuilder {
         Enum<?>[] enumConstants = columnClass.getEnumConstants();
         final List<Enum<?>> primaryKey = new ArrayList<>();
         final List<Enum<?>> foreignKey = new ArrayList<>();
+        final List<Enum<?>> unique = new ArrayList<>();
         for (Enum<?> column : enumConstants) {
-            processColumn(createSql, primaryKey, foreignKey, column);
+            processColumn(createSql, primaryKey, foreignKey, unique, column);
         }
         processPrimaryKey(createSql, primaryKey);
         processForeignKey(createSql, foreignKey);
+        processUnique(createSql, unique);
+    }
+    
+    private void processUnique(StringBuilder createSql, List<Enum<?>> unique) throws BuilderException {
+        if (unique.isEmpty()) {
+            return;
+        }
+        for (Enum<?> column : unique) {
+            createSql.append(", ");
+            createSql.append("UNIQUE ( ");
+            
+            final Unique uq = annotation(Unique.class, column);
+            String[] fields = uq.fields();
+            if (fields != null && fields.length > 0) {
+                for (int i = 0; i < fields.length; i++) {
+                    createSql.append(fields[i]);
+                    createSql.append(", ");
+                }
+            }
+            createSql.append(sqlColumnName(column));
+            createSql.append(")");
+        }
     }
 
     private void processForeignKey(StringBuilder createSql, List<Enum<?>> foreignKey) throws BuilderException {
@@ -206,12 +230,13 @@ public class SchemaBuilder {
     }
 
     private void processColumn(StringBuilder createSql, List<Enum<?>> primaryKey, List<Enum<?>> foreignKey,
-            Enum<?> column) throws BuilderException {
+            List<Enum<?>> unique, Enum<?> column) throws BuilderException {
 
         NotNull notNull = annotation(NotNull.class, column);
         DatabaseColumn columnDef = annotation(DatabaseColumn.class, column);
         PrimaryKey pk = annotation(PrimaryKey.class, column);
         ForeignKey fk = annotation(ForeignKey.class, column);
+        Unique uq = annotation(Unique.class, column);
 
         final String columnName = sqlColumnName(column);
         // If the create SQL ends with a space, we are at the beginning of the column
@@ -231,6 +256,9 @@ public class SchemaBuilder {
         }
         if (fk != null) {
             foreignKey.add(column);
+        }
+        if (uq != null) {
+            unique.add(column);
         }
     }
 

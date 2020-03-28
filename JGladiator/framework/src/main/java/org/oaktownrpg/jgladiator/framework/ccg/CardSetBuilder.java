@@ -43,13 +43,13 @@ public final class CardSetBuilder {
         return this;
     }
 
-    public CardSetBuilder expansionCode(String expansionCode) {
-        cardSet.setExpansionCode(expansionCode);
+    public CardSetBuilder code(String code) {
+        cardSet.setCode(code);
         return this;
     }
 
-    public CardSetBuilder parentCardSet(String id) {
-        cardSet.setParentCardSet(id);
+    public CardSetBuilder parentSetCode(String code) {
+        cardSet.setParentSetCode(code);
         return this;
     }
 

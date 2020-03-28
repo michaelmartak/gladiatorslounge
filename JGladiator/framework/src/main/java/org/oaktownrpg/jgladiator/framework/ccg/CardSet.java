@@ -17,9 +17,9 @@ public final class CardSet {
     private Ccg ccg;
     private String id;
     private Date releaseDate;
-    private String expansionCode;
+    private String code;
     private String information;
-    private String parentCardSet;
+    private String parentSetCode;
     private CardSetSymbol symbol;
     private Set<String> languages;
 
@@ -50,12 +50,12 @@ public final class CardSet {
         this.releaseDate = releaseDate;
     }
 
-    public String getParentCardSet() {
-        return parentCardSet;
+    public String getParentSetCode() {
+        return parentSetCode;
     }
 
-    void setParentCardSet(String parentCardSet) {
-        this.parentCardSet = parentCardSet;
+    void setParentSetCode(String parentSetCode) {
+        this.parentSetCode = parentSetCode;
     }
 
     public String getInformation() {
@@ -82,17 +82,17 @@ public final class CardSet {
         this.languages = languages;
     }
 
-    public String getExpansionCode() {
-        return expansionCode;
+    public String getCode() {
+        return code;
     }
 
-    void setExpansionCode(String expansionCode) {
-        this.expansionCode = expansionCode;
+    void setCode(String code) {
+        this.code = code;
     }
 
     @Override
     public String toString() {
-        return "CardSet [ccg=" + ccg + ", id=" + id + ", expansionCode=" + expansionCode + ", releaseDate="
+        return "CardSet [ccg=" + ccg + ", id=" + id + ", code=" + code + ", releaseDate="
                 + releaseDate + ", symbol=" + symbol + "]";
     }
 

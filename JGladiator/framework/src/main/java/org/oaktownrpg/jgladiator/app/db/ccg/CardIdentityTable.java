@@ -29,8 +29,10 @@ enum CardIdentityTable {
 
     /**
      * Unique identifier for a card within a Ccg.
+     * <p/>
+     * Using Scryfall's UUIDs as a source of truth for card set identity.
      */
-    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     @NotNull
     @PrimaryKey
     CARD_ID,

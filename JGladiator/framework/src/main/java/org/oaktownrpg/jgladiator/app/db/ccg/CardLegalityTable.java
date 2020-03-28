@@ -26,7 +26,7 @@ enum CardLegalityTable {
     @ForeignKey(table = "CCG", fields = "CCG_ID")
     CCG_ID,
 
-    @DatabaseColumn(type = DataType.VARCHAR, max = 255)
+    @DatabaseColumn(type = DataType.VARCHAR, max = 40)
     @NotNull
     @PrimaryKey
     @ForeignKey(table = "CARD_IDENTITY", fields = { "CCG_ID", "CARD_ID" })

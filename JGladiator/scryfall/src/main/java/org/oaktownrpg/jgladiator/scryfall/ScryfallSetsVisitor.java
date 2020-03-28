@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.Hub;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSetBuilder;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,6 +36,7 @@ class ScryfallSetsVisitor {
     private static final String SET_ID = "id";
     private static final String SET_CODE = "code";
     private static final String MTGO_CODE = "mtgo_code";
+    private static final String ARENA_CODE = "arena_code";
     private static final String TCGPLAYER_ID = "tcgplayer_id";
     private static final String SET_NAME = "name";
     private static final String SET_TYPE = "set_type";
@@ -78,33 +80,32 @@ class ScryfallSetsVisitor {
             
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode node = mapper.readTree(body);
-            processPageNode(node);
+            processPageNode(gatherer, node);
         } while (hasMore);
     }
 
-    private void processPageNode(JsonNode node) {
+    private void processPageNode(final Gatherer gatherer, final JsonNode node) {
         validatePageObjectTypeIsList(node);
         checkMorePages(node);
-        processPageData(node.get(DATA));
+        processPageData(gatherer, node.get(DATA));
     }
 
-    private void processPageData(JsonNode data) {
+    private void processPageData(final Gatherer gatherer, final JsonNode data) {
         if (data.isArray()) {
             for (JsonNode child : data) {
-                processPageData(child);
+                processPageData(gatherer, child);
             }
         }
-        processSetNode(data);
+        processSetNode(gatherer, data);
     }
 
-    private void processSetNode(JsonNode set) {
+    private void processSetNode(final Gatherer gatherer, final JsonNode set) {
         final JsonNode objectTypeNode = set.get(OBJECT);
         if (objectTypeNode == null || !OBJECT_TYPE_SET.equals(objectTypeNode.asText())) {
             logger.warning("Node was not a [card] set : " + objectTypeNode);
             return;
         }
-        
-        System.out.println();
+        new CardSetBuilder(); // FIXME
     }
 
     private void checkMorePages(JsonNode node) {
