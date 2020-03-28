@@ -6,11 +6,16 @@ package org.oaktownrpg.jgladiator.scryfall;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.oaktownrpg.jgladiator.framework.Http;
 import org.oaktownrpg.jgladiator.framework.Hub;
-import org.oaktownrpg.jgladiator.framework.ccg.CardSetBuilder;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSet;
+import org.oaktownrpg.jgladiator.framework.ccg.CardSetType;
 import org.oaktownrpg.jgladiator.framework.ccg.Gatherer;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class ScryfallSetsVisitor {
 
     private static final URI BASE_URI = URI.create("https://api.scryfall.com/sets");
-    
+
     private static final String OBJECT = "object";
     private static final String HAS_MORE = "has_more";
     private static final String NEXT_PAGE = "next_page";
@@ -47,8 +52,8 @@ class ScryfallSetsVisitor {
     private static final String CARD_COUNT = "card_count";
     private static final String DIGITAL = "digital";
     private static final String FOIL_ONLY = "foil_only";
-    private static final String SCRYFALL_URI = "scryfall_uri";
-    private static final String SET_URI = "uri";
+    // private static final String SCRYFALL_URI = "scryfall_uri";
+    // private static final String SET_URI = "uri";
     private static final String ICON_SVG_URI = "icon_svg_uri";
     private static final String SEARCH_URI = "search_uri";
 
@@ -77,7 +82,7 @@ class ScryfallSetsVisitor {
                 throw new IOException("Status " + statusCode);
             }
             final String body = response.body();
-            
+
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode node = mapper.readTree(body);
             processPageNode(gatherer, node);
@@ -99,13 +104,46 @@ class ScryfallSetsVisitor {
         processSetNode(gatherer, data);
     }
 
-    private void processSetNode(final Gatherer gatherer, final JsonNode set) {
-        final JsonNode objectTypeNode = set.get(OBJECT);
+    private void processSetNode(final Gatherer gatherer, final JsonNode setNode) {
+        final JsonNode objectTypeNode = setNode.get(OBJECT);
         if (objectTypeNode == null || !OBJECT_TYPE_SET.equals(objectTypeNode.asText())) {
             logger.warning("Node was not a [card] set : " + objectTypeNode);
             return;
         }
-        new CardSetBuilder(); // FIXME
+        final CardSet cardSet = new CardSet();
+        updateCardSet(setNode, SET_ID, (n) -> cardSet.setId(n.asText()));
+        updateCardSet(setNode, SET_CODE, (n) -> cardSet.setCode(n.asText()));
+        updateCardSet(setNode, MTGO_CODE, (n) -> cardSet.setMtgoCode(n.asText()));
+        updateCardSet(setNode, ARENA_CODE, (n) -> cardSet.setArenaCode(n.asText()));
+        updateCardSet(setNode, TCGPLAYER_ID, (n) -> cardSet.setTcgPlayerId(n.asInt()));
+        updateCardSet(setNode, SET_NAME, (n) -> cardSet.setName(n.asText()));
+        updateCardSet(setNode, SET_TYPE, (n) -> cardSet.setType(CardSetType.find(n.asText())));
+        updateCardSet(setNode, RELEASED_AT, (n) -> cardSet.setReleaseDate(parseDate(n.asText())));
+        updateCardSet(setNode, BLOCK_CODE, (n) -> cardSet.setBlockCode(n.asText()));
+        updateCardSet(setNode, BLOCK, (n) -> cardSet.setBlock(n.asText()));
+        updateCardSet(setNode, PARENT_SET_CODE, (n) -> cardSet.setParentSetCode(n.asText()));
+        updateCardSet(setNode, CARD_COUNT, (n) -> cardSet.setCardCount(n.asInt()));
+        updateCardSet(setNode, DIGITAL, (n) -> cardSet.setDigital(n.asBoolean()));
+        updateCardSet(setNode, FOIL_ONLY, (n) -> cardSet.setFoilOnly(n.asBoolean()));
+        gatherer.gatherCardSet(cardSet);
+    }
+
+    private Date parseDate(String text) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return format.parse(text);
+        } catch (ParseException ex) {
+            logger.warning("Could not parse date : '" + text + "'");
+            return null;
+        }
+    }
+
+    private void updateCardSet(JsonNode setNode, String key, Consumer<JsonNode> update) {
+        final JsonNode node = setNode.get(key);
+        if (node == null) {
+            return;
+        }
+        update.accept(node);
     }
 
     private void checkMorePages(JsonNode node) {

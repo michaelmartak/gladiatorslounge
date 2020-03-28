@@ -22,14 +22,14 @@ public final class CardSetSymbol {
     /**
      * 
      */
-    CardSetSymbol() {
+    public CardSetSymbol() {
     }
 
     public byte[] getBytes() {
         return bytes;
     }
 
-    void setBytes(byte[] bytes) {
+    public void setBytes(byte[] bytes) {
         this.bytes = bytes;
     }
 
@@ -37,7 +37,7 @@ public final class CardSetSymbol {
         return type;
     }
 
-    void setType(BlobType type) {
+    public void setType(BlobType type) {
         this.type = type;
     }
 
@@ -45,7 +45,7 @@ public final class CardSetSymbol {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -53,7 +53,7 @@ public final class CardSetSymbol {
         return altText;
     }
 
-    void setAltText(String altText) {
+    public void setAltText(String altText) {
         this.altText = altText;
     }
 
@@ -61,7 +61,7 @@ public final class CardSetSymbol {
         return source;
     }
 
-    void setSource(String source) {
+    public void setSource(String source) {
         this.source = source;
     }
 
