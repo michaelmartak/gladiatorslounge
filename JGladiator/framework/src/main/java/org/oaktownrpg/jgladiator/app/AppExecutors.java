@@ -5,6 +5,7 @@ package org.oaktownrpg.jgladiator.app;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +23,7 @@ public class AppExecutors implements HubExecutors {
     private static final int MAIN_THREAD_POOL_SIZE = 11;
 
     private final ExecutorService mainThreadPool = threadPool("Gladiator-Exec-", MAIN_THREAD_POOL_SIZE);
-    private final ExecutorService databaseExecutor = singleThread("Gladiator-Database");
+    private final ConcurrentHashMap<String, ExecutorService> databaseExecutors = new ConcurrentHashMap<>();
     private final ExecutorService blobStorageExecutor = singleThread("Gladiator-Blob-Storage");
 
     /**
@@ -55,12 +56,16 @@ public class AppExecutors implements HubExecutors {
     }
 
     /**
-     * Returns the executor to use for the DB connection
+     * Returns the executor to use for the given DB connection
+     * 
+     * @param name the name of the DB connection
      * 
      * @return an executor service, never null
      */
-    public ExecutorService databaseExecutor() {
-        return databaseExecutor;
+    public ExecutorService databaseExecutor(final String name) {
+        return databaseExecutors.computeIfAbsent(name, (key) -> {
+            return singleThread(key);
+        });
     }
 
     /**
